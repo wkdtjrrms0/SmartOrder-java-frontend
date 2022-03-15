@@ -12,7 +12,14 @@ const Order = () => {
     const {categoryid} = useParams();
     const navigate = useNavigate();
 
-    const fetchMenu = () => {
+    const activeCategory = (btn) => {
+        navigate('/stores/' + storeid + '/ispackage/' + 1 + '/categories/' + btn)
+        fetchMenu(btn)
+      };
+
+
+
+    const fetchMenu = (categoryid) => {
         const storeAPI = 'https://api.smartorder.ml/stores/' + storeid;
         const categoryAPI = 'https://api.smartorder.ml/stores/' + storeid + '/categories';
         const categoryMenuAPI = 'https://api.smartorder.ml/stores/' + storeid + '/categories/' + categoryid;
@@ -38,7 +45,7 @@ const Order = () => {
     )
     }
     useEffect(() => {
-        fetchMenu()
+        fetchMenu(categoryid)
     }, [])
 
 
@@ -57,10 +64,11 @@ const Order = () => {
             {categoryName.map((category) => {
                 return (
                     <>
-                    <button className="buttonCategory" key = {category.id} onClick={() => 
-                        navigate('/stores/' + storeid + '/ispackage/' + 1 + '/categories/' + category.id)}>
-                            {category.name}
-                            </button>
+                    <button
+                        className="buttonCategory"
+                        onClick={() => activeCategory(category.id)}>
+                        {category.name}
+                    </button>
                     </> 
                 );
             })}
