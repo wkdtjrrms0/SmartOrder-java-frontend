@@ -1,0 +1,65 @@
+.Order{
+    text-align: center;
+}
+
+.buttonCategory {
+    appearance: button;
+    background-color: #000;
+    background-image: none;
+    border: 1px solid #000;
+    border-radius: 4px;
+    box-sizing: border-box;
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    font-family: ITCAvantGardeStd-Bk,Arial,sans-serif;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 20px;
+    margin: 3px 2px;
+    overflow: visible;
+    padding: 10px 15px;
+    text-align: center;
+    text-transform: none;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+  .buttonCategory:focus {
+    text-decoration: none;
+  }
+  .buttonCategory:hover {
+    text-decoration: none;
+  }
+  .buttonCategory:active {
+    box-shadow: rgba(0, 0, 0, .125) 0 3px 5px inset;
+    outline: 0;
+  }
+  .buttonCategory:not([disabled]):active {
+    box-shadow: #fff 2px 2px 0 0, #000 2px 2px 0 1px;
+    transform: translate(2px, 2px);
+  }
+  .CategoryMenu{
+    padding-left: 0px;
+    list-style: none;
+      text-align: left;
+      width: 425px;;
+      margin: auto;
+      font-size: 20px;
+    
+  }
+  .categoryImg{
+    height: 50px;
+    width: 50px; 
+  }
+  .Menu{
+    border: 1px solid gray;
+  }
+
+  @media (width <= 425px) {
+  .CategoryMenu {
+    width: 100%;
+  }
+  }
