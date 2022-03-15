@@ -11,11 +11,29 @@ const Order = () => {
     const {ispackage} = useParams();
     const {categoryid} = useParams();
     const navigate = useNavigate();
+    const [sumPrice, setPrice] = useState(0);
 
     const activeCategory = (btn) => {
         navigate('/stores/' + storeid + '/ispackage/' + 1 + '/categories/' + btn)
         fetchMenu(btn)
       };
+
+    const addMenu = (btn) => {
+        setPrice(sumPrice + btn)
+    };
+    const deleteMenu = (btn) => {
+        if(sumPrice - btn <= 0){
+            setPrice(0)
+        }
+        else{
+        setPrice(sumPrice - btn)
+        }
+    };
+    
+    const payMent = (btn) => {
+        
+    };
+    
 
 
 
@@ -58,9 +76,9 @@ const Order = () => {
             </div>
             <div className="nine">
                         <h1>{storeName.name}<span>오늘도 좋은하루 되세요 :)</span></h1>
-                        </div>
+            </div>
 
-            <div>
+            <ul>
             {categoryName.map((category) => {
                 return (
                     <>
@@ -72,7 +90,7 @@ const Order = () => {
                     </> 
                 );
             })}
-            </div>
+            </ul>
 
             <ul className='CategoryMenu'>
             {categoryPick.map((menu) => {
@@ -80,12 +98,18 @@ const Order = () => {
                     <>                  
                     <li className="Menu" key={menu.id}>
                     <img className="categoryImg" src="/images/test.png" alt="ck"/>
-                    {menu.name} ({menu.price}원) <button> 담기 </button>
+                    {menu.name} ({menu.price}원) 
+                    <button onClick={() => addMenu(menu.price)}> + </button>
+                    <button onClick={() => deleteMenu(menu.price)}> - </button>
                     </li>
                     </> 
                 );
             })}
             </ul>
+            <div>
+                합계 : {sumPrice} 원 
+                <button onClick={() => payMent(sumPrice)}> 결제하기 </button>
+            </div>
         </div>
     );
 }
