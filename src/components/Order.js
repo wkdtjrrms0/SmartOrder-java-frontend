@@ -12,16 +12,29 @@ const Order = () => {
     const {categoryid} = useParams();
     const navigate = useNavigate();
     const [sumPrice, setPrice] = useState(0);
+    const [menuQuantity, setMenuQuantity] = useState([]);
+
 
     const activeCategory = (btn) => {
         navigate('/stores/' + storeid + '/ispackage/' + 1 + '/categories/' + btn)
         fetchMenu(btn)
       };
 
-    const addMenu = (btn) => {
+    const addMenu = (btn, id) => {
         setPrice(sumPrice + btn)
+
+        var newQuantity = [...menuQuantity];
+        newQuantity[id] = menuQuantity[id]++;
+        setMenuQuantity(newQuantity);
     };
-    const deleteMenu = (btn) => {
+    const deleteMenu = (btn, id) => {
+
+        if(menuQuantity[id] - 1 >= 0){
+        var newQuantity = [...menuQuantity];
+        newQuantity[id] = menuQuantity[id]--;
+        setMenuQuantity(newQuantity);
+        }
+
         if(sumPrice - btn <= 0){
             setPrice(0)
         }
@@ -29,11 +42,18 @@ const Order = () => {
         setPrice(sumPrice - btn)
         }
     };
-    
+
+    const controlmenuQuantity = (id, quantity) => {
+        var newQuantity = [...menuQuantity];
+        newQuantity[id] = menuQuantity[id] + quantity;
+        setMenuQuantity(newQuantity);
+        return newQuantity[id];
+    };
+
     const payMent = (btn) => {
         
     };
-    
+
 
 
 
@@ -78,7 +98,7 @@ const Order = () => {
                         <h1>{storeName.name}<span>오늘도 좋은하루 되세요 :)</span></h1>
             </div>
 
-            <ul>
+            <div>
             {categoryName.map((category) => {
                 return (
                     <>
@@ -90,17 +110,28 @@ const Order = () => {
                     </> 
                 );
             })}
-            </ul>
+            </div>
 
             <ul className='CategoryMenu'>
             {categoryPick.map((menu) => {
                 return (
                     <>                  
-                    <li className="Menu" key={menu.id}>
-                    <img className="categoryImg" src="/images/test.png" alt="ck"/>
-                    {menu.name} ({menu.price}원) 
-                    <button onClick={() => addMenu(menu.price)}> + </button>
-                    <button onClick={() => deleteMenu(menu.price)}> - </button>
+                    <li className="menulist" key={menu.id}>
+                    
+                    <img className="categoryImg" src={menu.menuimgUrl} alt="제품사진"/>
+                    <span className="menuInfo">
+                    <p className='menuName'> 
+                    {menu.name}
+                    </p>
+                    <p className='menuPrice'>
+                    {menu.price.toLocaleString()}원
+                    </p>
+                                        
+                    <button className="quantityButton" onClick={() => addMenu(menu.price, menu.id)}> + </button>
+                    &nbsp;수량작업중&nbsp;
+                    {/* <p>{controlmenuQuantity(menu.id,0) }</p> */}
+                    <button className="quantityButton" onClick={() => deleteMenu(menu.price, menu.id)}> - </button>
+                    </span>
                     </li>
                     </> 
                 );

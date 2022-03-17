@@ -41,25 +41,56 @@
     box-shadow: #fff 2px 2px 0 0, #000 2px 2px 0 1px;
     transform: translate(2px, 2px);
   }
+
+
+
+/*카테고리 하단 메뉴리스트*/
   .CategoryMenu{
     padding-left: 0px;
-    list-style: none;
-      text-align: left;
-      width: 425px;;
-      margin: auto;
-      font-size: 20px;
-    
+    width: 425px;
+    margin: auto;
+  }
+  .menulist {
+    background-color: #fff;
+    border-radius: 6px;
+    box-shadow: 0 2px 3px rgb(10 10 10 / 10%), 0 0 0 1px rgb(10 10 10 / 10%);
+    color: #4a4a4a;
+    display: block;
+    padding: 10px;
+    margin: 2px 20px 2px 20px;
+    overflow: auto;
+  }
+  .menuInfo{
+    float: left;
+    text-align: left;
+    font-family: 'Black Han Sans', sans-serif;
   }
   .categoryImg{
-    height: 50px;
-    width: 50px; 
+    float:right;
+    height: 100px;
+    width: 100px; 
+    border-radius: 15%;
   }
-  .Menu{
-    border: 1px solid gray;
+  p.menuName{
+    margin: 0px 0px 2px 0px;
+    font-size:larger;
+    font-weight: bold;
+  }
+  p.menuPrice{
+    margin: 0px 0px 20px 0px;
+    font-size:larger;
+  }
+  .quantityButton{
+  
+    
+    
   }
 
-  @media (width <= 425px) {
+
+
+
+@media (width <= 425px) {
   .CategoryMenu {
     width: 100%;
   }
-  }
+}
