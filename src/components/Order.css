@@ -1,7 +1,12 @@
 .Order{
     text-align: center;
 }
-
+.CategoryList{
+  text-align: center;
+  width:425px;
+  overflow-x:auto; white-space:nowrap; font-size:0;
+  margin: auto;
+}
 .buttonCategory {
     appearance: button;
     background-color: #000;
@@ -81,16 +86,82 @@
     font-size:larger;
   }
   .quantityButton{
-  
-    
-    
   }
-
-
 
 
 @media (width <= 425px) {
   .CategoryMenu {
     width: 100%;
   }
+  .CategoryList{
+    width: 100%;
+  }
 }
+
+
+
+
+/* -- quantity box -- */
+
+.quantity {
+  display: inline-block; 
+}
+ 
+ .quantity .input-text.qty {
+  display:inline-block;
+   margin: 0px;
+  width: 15px;
+  height: 20px;
+  padding: 0 5px 0px 5px;
+  text-align: center;
+  background-color: transparent;
+  border: 1px solid #000; /*efefef*/
+  
+ }
+ 
+ .quantity.buttons_added {
+  text-align: left;
+  position: relative;
+  white-space: nowrap;
+  vertical-align: top; }
+ 
+ .quantity.buttons_added input {
+  display: inline-block;
+  margin: 0;
+  vertical-align: top;
+  box-shadow: none;
+ }
+ 
+ .quantity.buttons_added .minus {
+  vertical-align: top;
+  color: #fff;
+  padding: 0px 7px 0px;
+  height: 22px;
+  background-color: #000;
+  border: 1px solid #000; /*efefef*/
+  border-top-left-radius: 15%;
+  border-bottom-left-radius: 15%;
+  cursor:pointer;}
+  .quantity.buttons_added .plus {
+    vertical-align: top;
+    color: #fff;
+    padding: 0px 7px 0px;
+    height: 22px;
+    background-color: #000;
+    border: 1px solid #000; /*efefef*/
+    border-top-right-radius: 15%;
+    border-bottom-right-radius: 15%;
+    cursor:pointer;}
+ 
+ 
+ .quantity.buttons_added .minus:hover,
+ .quantity.buttons_added .plus:hover {
+  background: gray; }
+ 
+ .quantity input::-webkit-outer-spin-button,
+ .quantity input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  margin: 0; }
+  
+ 

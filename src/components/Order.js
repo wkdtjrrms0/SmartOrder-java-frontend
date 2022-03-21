@@ -2,6 +2,8 @@ import React, {useState, useEffect} from 'react';
 import './Order.css';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
+ import {useDispatch, useSelector} from 'react-redux'
+
 
 const Order = () => {
     const [storeName, setStoreName] = useState([]);
@@ -12,56 +14,28 @@ const Order = () => {
     const {categoryid} = useParams();
     const navigate = useNavigate();
     const [sumPrice, setPrice] = useState(0);
-    const [menuQuantity, setMenuQuantity] = useState([]);
-
+    const cart = useSelector((state) => state);
+    const dispatch = useDispatch()
 
     const activeCategory = (btn) => {
         navigate('/stores/' + storeid + '/ispackage/' + 1 + '/categories/' + btn)
         fetchMenu(btn)
       };
-
-    const addMenu = (btn, id) => {
-        setPrice(sumPrice + btn)
-
-        var newQuantity = [...menuQuantity];
-        newQuantity[id] = menuQuantity[id]++;
-        setMenuQuantity(newQuantity);
+    const controlQuantity = (type, menu_Id, menu_Price) => {
+        dispatch({type : type, 
+            payload: {
+                      menuId : menu_Id,
+                      price: menu_Price
+            }})
+        setPrice(cart.totalPrice);
+        console.log(cart);
     };
-    const deleteMenu = (btn, id) => {
-
-        if(menuQuantity[id] - 1 >= 0){
-        var newQuantity = [...menuQuantity];
-        newQuantity[id] = menuQuantity[id]--;
-        setMenuQuantity(newQuantity);
-        }
-
-        if(sumPrice - btn <= 0){
-            setPrice(0)
-        }
-        else{
-        setPrice(sumPrice - btn)
-        }
-    };
-
-    const controlmenuQuantity = (id, quantity) => {
-        var newQuantity = [...menuQuantity];
-        newQuantity[id] = menuQuantity[id] + quantity;
-        setMenuQuantity(newQuantity);
-        return newQuantity[id];
-    };
-
-    const payMent = (btn) => {
-        
-    };
-
-
-
+    const payMent = (btn) => {};
 
     const fetchMenu = (categoryid) => {
         const storeAPI = 'https://api.smartorder.ml/stores/' + storeid;
         const categoryAPI = 'https://api.smartorder.ml/stores/' + storeid + '/categories';
         const categoryMenuAPI = 'https://api.smartorder.ml/stores/' + storeid + '/categories/' + categoryid;
-    
         const getStore = axios.get(storeAPI)
         const getCategory = axios.get(categoryAPI)
         const getCategoryMenu = axios.get(categoryMenuAPI)
@@ -71,23 +45,16 @@ const Order = () => {
             const storeInfo = allData[0].data[0];
             const allCategory = allData[1].data;
             const allCategoryMenu = allData[2].data;
-
             setStoreName(storeInfo)
             setCategoryName(allCategory)
             setCategoryPick(allCategoryMenu)
-
             console.log(storeInfo)
             console.log(allCategory)
             console.log(allCategoryMenu)
-        })
-    )
-    }
+        }))}
     useEffect(() => {
         fetchMenu(categoryid)
     }, [])
-
-
-
 
     return (
         <div className="Order">
@@ -98,7 +65,7 @@ const Order = () => {
                         <h1>{storeName.name}<span>오늘도 좋은하루 되세요 :)</span></h1>
             </div>
 
-            <div>
+            <div className='CategoryList'>
             {categoryName.map((category) => {
                 return (
                     <>
@@ -117,7 +84,6 @@ const Order = () => {
                 return (
                     <>                  
                     <li className="menulist" key={menu.id}>
-                    
                     <img className="categoryImg" src={menu.menuimgUrl} alt="제품사진"/>
                     <span className="menuInfo">
                     <p className='menuName'> 
@@ -126,11 +92,16 @@ const Order = () => {
                     <p className='menuPrice'>
                     {menu.price.toLocaleString()}원
                     </p>
-                                        
-                    <button className="quantityButton" onClick={() => addMenu(menu.price, menu.id)}> + </button>
-                    &nbsp;수량작업중&nbsp;
-                    {/* <p>{controlmenuQuantity(menu.id,0) }</p> */}
-                    <button className="quantityButton" onClick={() => deleteMenu(menu.price, menu.id)}> - </button>
+                         <div className="quantity buttons_added">             
+                    <button className="minus" onClick={() => controlQuantity('-', menu.id, menu.price)}> - </button>
+                    <span className ="input-text qty text" defaultValue={0}>
+                        {cart.orderMenu.map((ordermenu) => {
+                        if(ordermenu.menuId === menu.id)
+                            {return ordermenu.quantity}
+                    })}
+                    </span>
+                    <button className="plus" onClick={() => controlQuantity('+', menu.id, menu.price)}> + </button>
+                    </div> 
                     </span>
                     </li>
                     </> 

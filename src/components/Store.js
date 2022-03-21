@@ -4,13 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
+
 const Store = () => {
     const navigate = useNavigate();
     const eatingRestaurant = () => {
-        navigate('/stores/' + storeid + '/ispackage/' + 0 + '/categories/' + 1);
+        navigate('/stores/' + storeid + '/ispackage/' + 0 + '/categories/' + 0);
     };
     const eatingOutside = () => {
-        navigate('/stores/' + storeid + '/ispackage/' + 1 + '/categories/' + 1);
+        navigate('/stores/' + storeid + '/ispackage/' + 1 + '/categories/' + 0);
     };
     const [stores, setStores] = useState(null);
     const [loading, setLoading] = useState(false);
