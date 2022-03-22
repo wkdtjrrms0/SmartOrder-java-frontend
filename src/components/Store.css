@@ -1,7 +1,16 @@
-  .Store{
+.Store{
     text-align: center;
-  }
-  
+}
+.black-nav{
+  width: 425px;
+  margin:auto;
+  text-align: center;
+  background: black;
+  color: white;
+  padding: 20px 0;
+  font-size: 30px;
+  height: 41px;
+}
 .button-50 {
   appearance: button;
   background-color: #000;
@@ -28,10 +37,7 @@
   vertical-align: middle;
   white-space: nowrap;
 }
-.button-50:focus {
-  text-decoration: none;
-}
-.button-50:hover {
+.button-50:focus, .button-50:hover{
   text-decoration: none;
 }
 .button-50:active {
@@ -43,44 +49,41 @@
   transform: translate(2px, 2px);
 }
 
-/* Style 9
-   ----------------------------- */
-   .nine h1 {
+/* Style 9----------------------------- */
+.nine h1 {
     position: relative;
      width: 425px;
      margin: 0 auto;
     text-align:center; font-size:50px; text-transform:uppercase; color:#222; letter-spacing:1px;
     font-family:"Playfair Display", serif; font-weight:400;
-  }
-  .nine h1 span {
+}
+.nine h1 span {
     margin-top: 5px;
-      font-size:15px; color:#444; word-spacing:1px; font-weight:normal; letter-spacing:2px;
-      text-transform: uppercase; font-family:"Raleway", sans-serif; font-weight:500;
-  
-      display: grid;
-      grid-template-columns: 1fr max-content 1fr;
-      grid-template-rows: 27px 0;
-      grid-gap: 20px;
-      align-items: center;
-  }
-  .nine h1 span:after,.nine h1 span:before {
+    font-size:15px; color:#444; word-spacing:1px; font-weight:normal; letter-spacing:2px;
+    text-transform: uppercase; font-family:"Raleway", sans-serif; font-weight:500;
+    display: grid;
+    grid-template-columns: 1fr max-content 1fr;
+    grid-template-rows: 27px 0;
+    grid-gap: 20px;
+    align-items: center;
+}
+.nine h1 span:after,.nine h1 span:before {
       content: " ";
       display: block;
       border-bottom: 1px solid #ccc;
       border-top: 1px solid #ccc;
       height: 5px;
     background-color:#f8f8f8;
-  }
-
-  img{
+}
+img{
     height: 10%;
     width: 300px;
-  }
-  @media (width <= 425px) {
-    .nine h1 {
+}
+@media (width <= 425px) {
+  .nine h1, .black-nav{
     width: 100%;
-   }
-   img {
+  }
+  img {
     width: 70%;
   }
-  }
+}

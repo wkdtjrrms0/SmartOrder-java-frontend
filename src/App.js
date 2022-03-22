@@ -2,8 +2,6 @@ import React from 'react';
 import { BrowserRouter,Routes, Route, Navigate } from "react-router-dom";
 import Store from './components/Store';
 import Order from './components/Order';
-import Package from './components/Package';
-import Backet from './components/Backet';
   
 function App() {
 
@@ -14,8 +12,6 @@ function App() {
         <Route path="/" element={<Navigate replace to="/stores/2"/>} />
         <Route path = "/stores/:storeid" element = {<Store/>} />
         <Route path = "/stores/:storeid/ispackage/:ispackage/categories/:categoryid" element = {<Order/>} />
-        <Route path = "/Package" element = {<Package/>} />
-        <Route path = "/Backet" element = {<Backet/>} />
       </Routes>
     </BrowserRouter>
   );

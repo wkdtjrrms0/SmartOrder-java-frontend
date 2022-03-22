@@ -3,33 +3,35 @@ import './Store.css';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import {useDispatch, useSelector} from 'react-redux'
+import { useDispatch } from 'react-redux'
 
 const Store = () => {
     const navigate = useNavigate();
     const eatingRestaurant = () => {
-        dispatch({type : "setStoreInfo", 
+        dispatch({
+            type: "setStoreInfo",
             payload: {
-                    storeId : storeid,
-                    isPackage : 0
-            }});
+                storeId: storeid,
+                isPackage: 0
+            }
+        });
         navigate('/stores/' + storeid + '/ispackage/' + 0 + '/categories/' + 0);
     };
     const eatingOutside = () => {
-        dispatch({type : "setStoreInfo", 
+        dispatch({
+            type: "setStoreInfo",
             payload: {
-                    storeId : storeid,
-                    isPackage : 1
-            }});
+                storeId: storeid,
+                isPackage: 1
+            }
+        });
         navigate('/stores/' + storeid + '/ispackage/' + 1 + '/categories/' + 0);
     };
     const [stores, setStores] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const {storeid} = useParams();
-    const cart = useSelector((state) => state);
+    const { storeid } = useParams();
     const dispatch = useDispatch()
-
     const fetchStores = async () => {
         try {
             // 요청이 시작 할 때에는 error 와 users 를 초기화하고
@@ -46,31 +48,27 @@ const Store = () => {
         }
         setLoading(false);
     };
-
     useEffect(() => {
         fetchStores();
-    },[]);
-
+    }, []);
     if (loading) return <div>로딩중..</div>;
     if (error) return <div>에러가 발생했습니다</div>;
     if (!stores) return null;
 
     return (
         <div className="Store">
-            
             <div className="black-nav">주문 대행 서비스</div>
-            
             <div>
-            {stores.map((store) => {
-                return (
-                    <>
-                    <div className="nine">
-                        <h1>{store.name}<span>오늘도 좋은하루 되세요 :)</span></h1>
-                        </div>
-                    <img key={store.id} src={store.logoimgUrl} alt="식당로고사진" />
-                    </> 
-                );
-            })}
+                {stores.map((store) => {
+                    return (
+                        <React.Fragment key={store.id}>
+                            <div className="nine">
+                                <h1>{store.name}<span>오늘도 좋은하루 되세요 :)</span></h1>
+                            </div>
+                            <img key={store.id} src={store.logoimgUrl} alt="식당로고사진" />
+                        </React.Fragment>
+                    );
+                })}
             </div>
             <button className="button-50" onClick={eatingRestaurant}>매장주문</button>
             <button className="button-50" onClick={eatingOutside}>포장주문</button>
