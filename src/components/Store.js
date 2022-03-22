@@ -3,20 +3,32 @@ import './Store.css';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-
+import {useDispatch, useSelector} from 'react-redux'
 
 const Store = () => {
     const navigate = useNavigate();
     const eatingRestaurant = () => {
+        dispatch({type : "setStoreInfo", 
+            payload: {
+                    storeId : storeid,
+                    isPackage : 0
+            }});
         navigate('/stores/' + storeid + '/ispackage/' + 0 + '/categories/' + 0);
     };
     const eatingOutside = () => {
+        dispatch({type : "setStoreInfo", 
+            payload: {
+                    storeId : storeid,
+                    isPackage : 1
+            }});
         navigate('/stores/' + storeid + '/ispackage/' + 1 + '/categories/' + 0);
     };
     const [stores, setStores] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const {storeid} = useParams();
+    const cart = useSelector((state) => state);
+    const dispatch = useDispatch()
 
     const fetchStores = async () => {
         try {

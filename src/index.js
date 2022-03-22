@@ -39,13 +39,8 @@ function getTotalCount(arr){
 }
 
 function getCountMessage(n){
-
-  if(n <= 1){
-    return "";
-  }
-  else {
-    return "외 " + (n - 1) + "개";
-  }
+  if(n <= 1){ return ""; }
+  else { return "외 " + (n - 1) + "개"; }
 }
 
 
@@ -111,8 +106,13 @@ state.totalCount = getTotalCount(state.orderMenu);
 state.countMessage = getCountMessage(state.totalCount);
 return state
 }
-  else{
-    return state
+  else if(action.type === 'setStoreInfo'){
+    state.storeId = action.payload.storeId;
+    state.isPackage = action.payload.isPackage;
+    return state;
+  }
+  else {
+    return state;
   }
 }
 
