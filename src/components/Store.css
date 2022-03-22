@@ -46,6 +46,7 @@
 /* Style 9
    ----------------------------- */
    .nine h1 {
+    position: relative;
      width: 425px;
      margin: 0 auto;
     text-align:center; font-size:50px; text-transform:uppercase; color:#222; letter-spacing:1px;

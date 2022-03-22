@@ -11,9 +11,11 @@ const cart = {
   isPackage: null,
   totalPrice: 0,
   totalCount: 0,
+  countMessage: "",
   orderMenu: [
     {
       menuId : null,
+      menuName : "",
       quantity: 0,
       price: null
     }
@@ -36,16 +38,28 @@ function getTotalCount(arr){
   return count;
 }
 
+function getCountMessage(n){
+
+  if(n <= 1){
+    return "";
+  }
+  else {
+    return "외 " + (n - 1) + "개";
+  }
+}
+
 
 function reducer(state = cart, action){
   if(action.type === '+'){
   //최초 수량 증가
   if (state.orderMenu[0].menuId === null) {
     state.orderMenu[0].menuId = action.payload.menuId;
+    state.orderMenu[0].menuName = action.payload.menuName;
     state.orderMenu[0].quantity++;
     state.orderMenu[0].price = action.payload.price;
     state.totalPrice = getTotalPrice(state.orderMenu);
     state.totalCount = getTotalCount(state.orderMenu);
+    state.countMessage = getCountMessage(state.totalCount);
     return state;
   }
   var check = false;
@@ -59,12 +73,14 @@ function reducer(state = cart, action){
 if(check === false){
   state.orderMenu.push({
     menuId: action.payload.menuId,
+    menuName: action.payload.menuName,
     quantity: 1,
     price: action.payload.price
   })
 }
 state.totalPrice = getTotalPrice(state.orderMenu);
 state.totalCount = getTotalCount(state.orderMenu);
+state.countMessage = getCountMessage(state.totalCount);
 return state;
 }
       
@@ -72,6 +88,7 @@ return state;
 
   else if (action.type === '-'){
     if (state.orderMenu[0].menuId === null || state.totalCount === 0) {
+      state.countMessage = getCountMessage(state.totalCount);
       return state;
     }
   for (var j = 0; j < state.orderMenu.length; j++) {
@@ -79,12 +96,19 @@ return state;
       state.orderMenu[j].quantity--;
       if(state.orderMenu[j].quantity <= 0){
         state.orderMenu.splice(j, 1);
+        state.orderMenu.push({
+          menuId : null,
+          menuName : "",
+          quantity: 0,
+          price: null
+        })
       }
      break;
   }
 }
 state.totalPrice = getTotalPrice(state.orderMenu);
 state.totalCount = getTotalCount(state.orderMenu);
+state.countMessage = getCountMessage(state.totalCount);
 return state
 }
   else{

@@ -8,10 +8,10 @@
   margin:auto;
   text-align: center;
   background: black;
-  position:relative;
   color: white;
   padding: 20px 0;
   font-size: 30px;
+  height: 41px;
 }
 
 @media (width <= 425px) {

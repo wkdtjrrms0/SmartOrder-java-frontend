@@ -1,11 +1,63 @@
 .Order{
-    text-align: center;
 }
+.black-nav-order{
+  position: fixed;
+  left: 50%;
+  transform:translateX(-50%);
+  width: 425px;
+  top:0px;
+  margin:auto;
+  text-align: center;
+  background: black;
+  color: white;
+  padding: 20px 0;
+  font-size: 30px;
+  height: 41px;
+}
+
+.nine-order h1 {
+  background-color: white;
+   left: 50%;
+  transform:translateX(-50%);
+  position: fixed;
+  top: 81px;
+   width: 425px;
+   margin: 0 auto;
+  text-align:center; font-size:50px; text-transform:uppercase; color:#222; letter-spacing:1px;
+  font-family:"Playfair Display", serif; font-weight:400;
+}
+.nine-order h1 span {
+  margin-top: 5px;
+    font-size:15px; color:#444; word-spacing:1px; font-weight:normal; letter-spacing:2px;
+    text-transform: uppercase; font-family:"Raleway", sans-serif; font-weight:500;
+
+    display: grid;
+    grid-template-columns: 1fr max-content 1fr;
+    grid-template-rows: 27px 0;
+    grid-gap: 20px;
+    align-items: center;
+}
+.nine-order h1 span:after,.nine-order h1 span:before {
+    content: " ";
+    display: block;
+    border-bottom: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+    height: 5px;
+  background-color:#f8f8f8;
+}
+
+
 .CategoryList{
+ 
   text-align: center;
   width:425px;
   overflow-x:auto; white-space:nowrap; font-size:0;
   margin: auto;
+  position: fixed;
+  left: 50%;
+    transform:translateX(-50%);
+    top: 190px;
+    background-color: white;
 }
 .buttonCategory {
     appearance: button;
@@ -51,6 +103,8 @@
 
 /*카테고리 하단 메뉴리스트*/
   .CategoryMenu{
+    padding-top: 240px;
+    padding-bottom: 110px;
     padding-left: 0px;
     width: 425px;
     margin: auto;
@@ -85,21 +139,6 @@
     margin: 0px 0px 20px 0px;
     font-size:larger;
   }
-  .quantityButton{
-  }
-
-
-@media (width <= 425px) {
-  .CategoryMenu {
-    width: 100%;
-  }
-  .CategoryList{
-    width: 100%;
-  }
-}
-
-
-
 
 /* -- quantity box -- */
 
@@ -115,13 +154,12 @@
   padding: 0 5px 0px 5px;
   text-align: center;
   background-color: transparent;
-  border: 1px solid #000; /*efefef*/
+  border: 1px solid #000;
   
  }
  
  .quantity.buttons_added {
   text-align: left;
-  position: relative;
   white-space: nowrap;
   vertical-align: top; }
  
@@ -138,7 +176,7 @@
   padding: 0px 7px 0px;
   height: 22px;
   background-color: #000;
-  border: 1px solid #000; /*efefef*/
+  border: 1px solid #000;
   border-top-left-radius: 15%;
   border-bottom-left-radius: 15%;
   cursor:pointer;}
@@ -148,7 +186,7 @@
     padding: 0px 7px 0px;
     height: 22px;
     background-color: #000;
-    border: 1px solid #000; /*efefef*/
+    border: 1px solid #000;
     border-top-right-radius: 15%;
     border-bottom-right-radius: 15%;
     cursor:pointer;}
@@ -164,4 +202,68 @@
   -moz-appearance: none;
   margin: 0; }
   
- 
+  .fixed{
+    width: 401px;
+    margin: 0;
+    position: fixed;
+    left: 50%;
+    transform:translateX(-50%);
+    bottom: 0;
+    margin:auto;
+    background: black;
+    color: white;
+    padding: 0 12px 12px;
+    
+  }
+
+  .fixed .paymentButton{
+    margin:auto;
+    width: 100%;
+    padding: 15px 40px;
+    font-size: 20px;
+    position:relative;
+    left: 50%;
+    transform:translateX(-50%);
+    border: 1px solid #000;
+    border-radius: 10px;
+    font-weight: bolder;
+  }
+  .payMenu{
+    font-size: 15px;
+    text-align: left;
+    float: left;
+    padding: 5px;
+  }
+  .payAmount{
+    font-size: 15px;
+    text-align: right;
+    float: right;
+    padding: 5px;
+  }
+
+  @media (width <= 425px) {
+    .black-nav-order{
+      width: 100%;
+    }
+    .nine-order h1 {
+      width: 100%;
+     }
+    .CategoryMenu {
+      width: 100%;
+    }
+    .CategoryList{
+      width: 100%;
+    }
+    .fixed{
+      width: 100%;
+    }
+    .fixed .paymentButton{
+      width: 95%;
+    }
+    .payMenu{
+      padding: 5px 0px 5px 12px;
+    }
+    .payAmount{
+      padding: 5px 12px 5px 0px;
+    }
+  }

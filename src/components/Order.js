@@ -21,10 +21,11 @@ const Order = () => {
         navigate('/stores/' + storeid + '/ispackage/' + 1 + '/categories/' + btn)
         fetchMenu(btn)
       };
-    const controlQuantity = (type, menu_Id, menu_Price) => {
+    const controlQuantity = (type, menu_Id, menu_Price, menu_name) => {
         dispatch({type : type, 
             payload: {
                       menuId : menu_Id,
+                      menuName : menu_name,
                       price: menu_Price
             }})
         setPrice(cart.totalPrice);
@@ -58,10 +59,10 @@ const Order = () => {
 
     return (
         <div className="Order">
-            <div className="black-nav">
+            <div className="black-nav-order">
                 주문 대행 서비스
             </div>
-            <div className="nine">
+            <div className="nine-order">
                         <h1>{storeName.name}<span>오늘도 좋은하루 되세요 :)</span></h1>
             </div>
 
@@ -93,14 +94,15 @@ const Order = () => {
                     {menu.price.toLocaleString()}원
                     </p>
                          <div className="quantity buttons_added">             
-                    <button className="minus" onClick={() => controlQuantity('-', menu.id, menu.price)}> - </button>
+                    <button className="minus" onClick={() => controlQuantity('-', menu.id, menu.price, menu.name)}> - </button>
                     <span className ="input-text qty text" defaultValue={0}>
                         {cart.orderMenu.map((ordermenu) => {
                         if(ordermenu.menuId === menu.id)
                             {return ordermenu.quantity}
+                        else {return null}
                     })}
                     </span>
-                    <button className="plus" onClick={() => controlQuantity('+', menu.id, menu.price)}> + </button>
+                    <button className="plus" onClick={() => controlQuantity('+', menu.id, menu.price, menu.name)}> + </button>
                     </div> 
                     </span>
                     </li>
@@ -108,9 +110,10 @@ const Order = () => {
                 );
             })}
             </ul>
-            <div>
-                합계 : {sumPrice} 원 
-                <button onClick={() => payMent(sumPrice)}> 결제하기 </button>
+            <div className = "fixed">
+                <div className = "payMenu">{cart.orderMenu[0].menuName} {cart.countMessage}</div> 
+                <div className = "payAmount">결제예정금액 : {sumPrice.toLocaleString()} 원</div> 
+                <button className = "paymentButton" onClick={() => payMent(sumPrice)}> 결제하기 </button>
             </div>
         </div>
     );
