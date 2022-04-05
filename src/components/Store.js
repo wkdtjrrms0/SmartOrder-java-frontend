@@ -11,7 +11,7 @@ const Store = () => {
         dispatch({
             type: "setStoreInfo",
             payload: {
-                storeId: storeid,
+                storeId: parseInt(storeid),
                 isPackage: 0
             }
         });
@@ -21,7 +21,7 @@ const Store = () => {
         dispatch({
             type: "setStoreInfo",
             payload: {
-                storeId: storeid,
+                storeId: parseInt(storeid),
                 isPackage: 1
             }
         });

@@ -9,13 +9,14 @@ const Order = () => {
     const [categoryName, setCategoryName] = useState([]);
     const [categoryPick, setCategoryPick] = useState([]);
     const { storeid } = useParams();
+    const { ispackage } = useParams();
     const { categoryid } = useParams();
     const navigate = useNavigate();
     const [sumPrice, setPrice] = useState(0);
     const cart = useSelector((state) => state);
     const dispatch = useDispatch()
     const activeCategory = (btn) => {
-        navigate('/stores/' + storeid + '/ispackage/' + 1 + '/categories/' + btn)
+        navigate('/stores/' + storeid + '/ispackage/' + ispackage + '/categories/' + btn)
         fetchMenu(btn)
     };
     const controlQuantity = (type, menu_Id, menu_Price, menu_name) => {
@@ -29,10 +30,6 @@ const Order = () => {
         })
         setPrice(cart.totalPrice);
         console.log(cart);
-    };
-    const payMent = (btn) => {
-        alert("작업중입니다.");
-        console.log("결제금액: " + btn);
     };
     const fetchMenu = (categoryid) => {
         const storeAPI = 'https://api.smartorder.ml/stores/' + storeid;
@@ -57,6 +54,72 @@ const Order = () => {
     useEffect(() => {
         fetchMenu(categoryid)
     }, [])
+
+    function payMent() {
+        const userCode = 'imp06890814';
+    
+        /* 2. 결제 데이터 정의하기 */
+        const data = {
+          pg: 'html5_inicis',                           // PG사
+          pay_method: 'card',                           // 결제수단
+          merchant_uid: `mid_${new Date().getTime()}`,   // 주문번호
+          amount: cart.totalPrice,                      // 결제금액
+          name: cart.orderMenu[0].menuName + ' ' + cart.countMessage,  // 주문명
+          buyer_name: '홍길동',                           // 구매자 이름
+          buyer_tel: '01012341234',                     // 구매자 전화번호
+          buyer_email: 'example@example',               // 구매자 이메일
+          buyer_addr: '신사동 661-16',                    // 구매자 주소
+          buyer_postcode: '06018',                      // 구매자 우편번호
+          m_redirect_url: 'naver.com'
+        };
+    
+        if (isReactNative()) {
+          /* 5. 리액트 네이티브 환경에 대응하기 */
+          const params = {
+            userCode,                                   // 가맹점 식별코드
+            data,                                       // 결제 데이터
+            type: 'payment',                            // 결제와 본인인증 구분을 위한 필드
+          };
+          const paramsToString = JSON.stringify(params);
+          window.ReactNativeWebView.postMessage(paramsToString);
+        } else {
+          /* 1. 가맹점 식별하기 */
+          const { IMP } = window;
+          IMP.init(userCode);
+          /* 4. 결제 창 호출하기 */
+          IMP.request_pay(data, callback);
+        }
+      }
+    
+      /* 3. 콜백 함수 정의하기 */
+      function callback(response) {
+        const {
+          success,
+          merchant_uid,
+          error_msg,
+          
+        } = response;
+    
+        if (success) {
+          alert('결제 성공');
+          //navigate('/orderrequest');
+        } else {
+          alert(`결제 실패: ${error_msg}`);
+        }
+      }
+    
+      function isReactNative() {
+        /*
+          리액트 네이티브 환경인지 여부를 판단해
+          리액트 네이티브의 경우 IMP.payment()를 호출하는 대신
+          iamport-react-native 모듈로 post message를 보낸다
+    
+          아래 예시는 모든 모바일 환경을 리액트 네이티브로 인식한 것으로
+          실제로는 user agent에 값을 추가해 정확히 판단해야 한다
+        */
+        //if (ua.mobile) return true;
+        return false;
+      }
 
     return (
         <div className="Order">
@@ -107,7 +170,7 @@ const Order = () => {
             <div className="fixed">
                 <div className="payMenu">{cart.orderMenu[0].menuName} {cart.countMessage}</div>
                 <div className="payAmount">결제예정금액 : {sumPrice.toLocaleString()} 원</div>
-                <button className="paymentButton" onClick={() => payMent(sumPrice)}> 결제하기 </button>
+                <button className="paymentButton" onClick={() => payMent()}> 결제하기 </button>
             </div>
         </div>
     );
