@@ -17,7 +17,7 @@ const cart = {
       menuId : null,
       menuName : "",
       quantity: 0,
-      price: null
+      price: 0
     }
   ]
 }
@@ -25,7 +25,7 @@ const cart = {
 function getTotalPrice(arr){
   var price = 0;
   for (var i = 0; i < arr.length; i++) {
-    price += arr[i].quantity * arr[i].price;
+    price += arr[i].price;
   }
   return price;
 }
@@ -61,6 +61,7 @@ function reducer(state = cart, action){
   for (var i = 0; i < state.orderMenu.length; i++) {
     if (state.orderMenu[i].menuId === action.payload.menuId) {
       state.orderMenu[i].quantity++;
+      state.orderMenu[i].price = state.orderMenu[i].quantity * action.payload.price;
       check = true;
      break;
   }
@@ -89,14 +90,17 @@ return state;
   for (var j = 0; j < state.orderMenu.length; j++) {
     if (state.orderMenu[j].menuId === action.payload.menuId) {
       state.orderMenu[j].quantity--;
+      state.orderMenu[j].price = state.orderMenu[j].quantity * action.payload.price;
       if(state.orderMenu[j].quantity <= 0){
         state.orderMenu.splice(j, 1);
+        if(state.orderMenu.length === 0){
         state.orderMenu.push({
           menuId : null,
           menuName : "",
           quantity: 0,
-          price: null
+          price: 0
         })
+      }
       }
      break;
   }
