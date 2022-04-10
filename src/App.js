@@ -13,7 +13,7 @@ function App() {
         <Route path="/" element={<Navigate replace to="/stores/2"/>} />
         <Route path = "/stores/:storeid" element = {<Store/>} />
         <Route path = "/stores/:storeid/ispackage/:ispackage/categories/:categoryid" element = {<Order/>} />
-        <Route path = "/payments/complete" element = {<OrderRequest/>} />
+        <Route path = "/stores/:storeid/payments/complete" element = {<OrderRequest/>} />
       </Routes>
     </BrowserRouter>
   );

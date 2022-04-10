@@ -1,60 +1,61 @@
 import React, { useState, useEffect } from 'react';
 import './Store.css';
-import { useNavigate } from 'react-router-dom';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useDispatch } from 'react-redux'
 
 const Store = () => {
+    const [stores, setStores] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const { storeid } = useParams();
+    const dispatch = useDispatch()
     const navigate = useNavigate();
+
     const eatingRestaurant = () => {
         dispatch({
-            type: "setStoreInfo",
+            type: "StoreInfo",
             payload: {
                 storeId: parseInt(storeid),
                 isPackage: 0
             }
         });
         navigate('/stores/' + storeid + '/ispackage/' + 0 + '/categories/' + 0);
-    };
+    }; /* 매장주문 버튼 */
+
     const eatingOutside = () => {
         dispatch({
-            type: "setStoreInfo",
+            type: "StoreInfo",
             payload: {
                 storeId: parseInt(storeid),
                 isPackage: 1
             }
         });
         navigate('/stores/' + storeid + '/ispackage/' + 1 + '/categories/' + 0);
-    };
-    const [stores, setStores] = useState(null);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const { storeid } = useParams();
-    const dispatch = useDispatch()
+    }; /* 포장주문 버튼 */
+
     const fetchStores = async () => {
         try {
-            // 요청이 시작 할 때에는 error 와 users 를 초기화하고
             setError(null);
             setStores(null);
-            // loading 상태를 true 로 바꿉니다.
             setLoading(true);
             const response = await axios.get(
-                'http://localhost:8080/stores/' + storeid
+                'https://api.smartorder.ml/stores/' + storeid
             );
-            setStores(response.data); // 데이터는 response.data 안에 들어있습니다.
+            setStores(response.data);
         } catch (e) {
             setError(e);
         }
         setLoading(false);
-    };
+    }; /* 매장정보 API 호출 */
+
     useEffect(() => {
         fetchStores();
     }, []);
+
     if (loading) return <div>로딩중..</div>;
     if (error) return <div>에러가 발생했습니다</div>;
     if (!stores) return null;
-
     return (
         <div className="Store">
             <div className="black-nav">주문 대행 서비스</div>

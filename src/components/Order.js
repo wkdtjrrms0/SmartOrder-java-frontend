@@ -5,11 +5,9 @@ import './Order.css';
 import axios from 'axios';
 
 const Order = () => {
-    const [storeName, setStoreName] = useState([]);
+    const [storeInfo, setStoreInfo] = useState([]);
     const [categoryName, setCategoryName] = useState([]);
     const [categoryPick, setCategoryPick] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
     const { storeid } = useParams();
     const { ispackage } = useParams();
     const { categoryid } = useParams();
@@ -31,123 +29,66 @@ const Order = () => {
             }
         })
         setPrice(cart.totalPrice);
-        console.log(cart);
     };
     const fetchMenu = (categoryid) => {
-        const storeAPI = 'http://localhost:8080/stores/' + storeid;
-        const categoryAPI = 'http://localhost:8080/stores/' + storeid + '/categories';
-        const categoryMenuAPI = 'http://localhost:8080/stores/' + storeid + '/categories/' + categoryid;
+        const storeAPI = 'https://api.smartorder.ml/stores/' + storeid;
+        const categoryAPI = 'https://api.smartorder.ml/stores/' + storeid + '/categories';
+        const categoryMenuAPI = 'https://api.smartorder.ml/stores/' + storeid + '/categories/' + categoryid;
         const getStore = axios.get(storeAPI)
         const getCategory = axios.get(categoryAPI)
         const getCategoryMenu = axios.get(categoryMenuAPI)
         axios.all([getStore, getCategory, getCategoryMenu]).then(
             axios.spread((...allData) => {
-                const storeInfo = allData[0].data[0];
-                const allCategory = allData[1].data;
-                const allCategoryMenu = allData[2].data;
-                setStoreName(storeInfo)
-                setCategoryName(allCategory)
-                setCategoryPick(allCategoryMenu)
-                console.log(storeInfo)
-                console.log(allCategory)
-                console.log(allCategoryMenu)
+                setStoreInfo(allData[0].data[0])
+                setCategoryName(allData[1].data)
+                setCategoryPick(allData[2].data)
             }))
     }
-    const fetchOrderRequest = async () => {
-        const axiosConfig = {
-            headers:{
-                "Content-Type": "application/json"
+    const payMent = async() => {
+        dispatch({
+            type: "StoreInfo",
+            payload: {
+                storeId: parseInt(storeid),
+                isPackage: parseInt(ispackage)
             }
+        });
+        const OrderRequestAPI = 'https://api.smartorder.ml/stores/' + cart.storeId + '/orders';
+        const axiosConfig = { 
+            headers: { "Content-Type": "application/json" } 
         }
-        try {
-          //응답 성공 
-          setError(null);
-          setLoading(true);
-          const response = await axios.post('http://localhost:8080/stores/' + cart.storeId + '/orders',
-              JSON.stringify(cart),
-              axiosConfig
-          );
-          console.log(response);
-        } catch (e) {
-          //응답 실패
-          setError(e);
-        }
-        setLoading(false);
-      };
-
+        const getMerchantUid = await axios.post(OrderRequestAPI, JSON.stringify(cart), axiosConfig);
+        const data = {
+            pg: 'html5_inicis',
+            pay_method: 'card',
+            merchant_uid: getMerchantUid.data,
+            amount: cart.totalPrice,
+            name: cart.orderMenu[0].menuName + ' ' + cart.countMessage,
+            buyer_name: '상점1',
+            buyer_tel: '',
+            buyer_email: 'username@example.com',
+            m_redirect_url: 'https://www.smartorder.ml/stores/' + storeInfo.id + '/payments/complete'
+        }; /* 결제 데이터 {PG사, 결제수단, 주문번호, 결제금액, 주문명, 고객이름, 고객전화번호, 고객이메일, 모바일리다이렉트url} */
+        console.log(data);
+        const IMP = window.IMP; /* 1. IMP객체 초기화 */
+        IMP.init(storeInfo.impCode); /* 2. 가맹점 식별코드로 IMP객체 초기화 */
+        IMP.request_pay(data, callback); /* 3. 결제창 호출 */
+    };
     useEffect(() => {
         fetchMenu(categoryid)
     }, [])
 
-    function payMent() {
-        fetchOrderRequest();
-        const userCode = storeName.impCode;
-    
-        /* 2. 결제 데이터 정의하기 */
-        const data = {
-          pg: 'html5_inicis',                           // PG사
-          pay_method: 'card',                           // 결제수단
-          merchant_uid: storeName.id + '_' + (parseInt(storeName.merchantUid.split('_')[1]) + 1),   // 주문번호(상점고유번호_가장 마지막 주문번호에서 1을 더함)
-          amount: cart.totalPrice,                      // 결제금액
-          name: cart.orderMenu[0].menuName + ' ' + cart.countMessage,  // 주문명
-          buyer_name: '상점1',                           // 구매자 이름
-          buyer_tel: '',                     // 구매자 전화번호
-          buyer_email: 'username@example.com',               // 구매자 이메일
-           m_redirect_url: 'http://localhost:3000/payments/complete' 
-             /*아임포트js sdk 버전을 1.1.8에선 해당속성이 필수이나, 1.1.7로 내려 리디렉션 방식대신 콜백방식 사용
-           * 결제정보 유지를 위해
-           *  */ 
-
-             
-          
-        };
-    
-        if (isReactNative()) {
-          /* 5. 리액트 네이티브 환경에 대응하기 */
-          const params = {
-            userCode,                                   // 가맹점 식별코드
-            data,                                       // 결제 데이터
-            type: 'payment',                            // 결제와 본인인증 구분을 위한 필드
-          };
-          const paramsToString = JSON.stringify(params);
-          window.ReactNativeWebView.postMessage(paramsToString);
-        } else {
-          /* 1. 가맹점 식별하기 */
-          const { IMP } = window;
-          IMP.init(userCode);
-          /* 4. 결제 창 호출하기 */
-          IMP.request_pay(data, callback);
-        }
-      }
-    
-      /* 3. 콜백 함수 정의하기 */
-      function callback(response) {
+    function callback(response) {
         const {
-          success,
-          merchant_uid,
-          error_msg,
-          
+            success,
+            merchant_uid,
+            error_msg,
         } = response;
-    
         if (success) {
             navigate('/payments/complete');
         } else {
-          alert(`결제 실패: ${error_msg}`);
+            alert(`결제 실패: ${error_msg}`);
         }
-      }
-    
-      function isReactNative() {
-        /*
-          리액트 네이티브 환경인지 여부를 판단해
-          리액트 네이티브의 경우 IMP.payment()를 호출하는 대신
-          iamport-react-native 모듈로 post message를 보낸다
-    
-          아래 예시는 모든 모바일 환경을 리액트 네이티브로 인식한 것으로
-          실제로는 user agent에 값을 추가해 정확히 판단해야 한다
-        */
-        //if (ua.mobile) return true;
-        return false;
-      }
+    } /* 콜백 함수(모바일에선 콜백함수가 호출되지 않고 m_redirect_url로 리다이렉트 됨) */
 
     return (
         <div className="Order">
@@ -155,7 +96,7 @@ const Order = () => {
                 주문 대행 서비스
             </div>
             <div className="nine-order">
-                <h1>{storeName.name}<span>오늘도 좋은하루 되세요 :)</span></h1>
+                <h1>{storeInfo.name}<span>오늘도 좋은하루 되세요 :)</span></h1>
             </div>
             <div className='CategoryList'>
                 {categoryName.map((category) => {
@@ -198,7 +139,7 @@ const Order = () => {
             <div className="fixed">
                 <div className="payMenu">{cart.orderMenu[0].menuName} {cart.countMessage}</div>
                 <div className="payAmount">결제예정금액 : {sumPrice.toLocaleString()} 원</div>
-                <button className="paymentButton" onClick={() => payMent()}> 결제하기 </button>
+                <button className="paymentButton" onClick={payMent}> 결제하기 </button>
             </div>
         </div>
     );
