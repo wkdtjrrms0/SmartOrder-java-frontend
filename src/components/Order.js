@@ -63,7 +63,7 @@ const Order = () => {
             merchant_uid: getMerchantUid.data,
             amount: cart.totalPrice,
             name: cart.orderMenu[0].menuName + ' ' + cart.countMessage,
-            buyer_name: '상점1',
+            buyer_name: '테스트',
             buyer_tel: '',
             buyer_email: 'username@example.com',
             m_redirect_url: 'https://www.smartorder.ml/stores/' + storeInfo.id + '/payments/complete'

@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import './OrderRequest.css';
 import axios from 'axios';
 import queryString from "query-string";
 
 const OrderRequest = () => {
-  const [resultMessage, setResultMessage] = useState([]);
+  const [resultMessage, setResultMessage] = useState("");
   const [orderMenu, setOrderMenu] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const { storeid } = useParams();
+  const navigate = useNavigate();
+  const goHome = () => {
+    navigate('/stores/' + storeid)
+};
   const query = queryString.parse(window.location.search);
   const checkForgeryVerificationAPI = 'https://api.smartorder.ml/stores/' + storeid + '/payments/complete?imp_uid=' + query.imp_uid + '&merchant_uid=' + query.merchant_uid;
   const orderResultAPI = 'https://api.smartorder.ml/stores/' + storeid + '/orders/result?merchant_uid=' + query.merchant_uid;
@@ -33,8 +37,8 @@ const OrderRequest = () => {
 
   return (
     <div>
-      {resultMessage}<br />
-      주문번호: {query.merchant_uid.split('-')[2]}<br />
+      {resultMessage.split('_')[0]}<br />
+      주문번호: {resultMessage.split('_')[1]}<br />
       주문내역<br />
       <ul>
         {orderMenu.map((ordermenu) => {
@@ -51,7 +55,8 @@ const OrderRequest = () => {
           );
         })}
       </ul>
-      결제금액: {totalPrice.toLocaleString()}원
+      결제금액: {totalPrice.toLocaleString()}원<br/>
+      <button type='button' onClick={goHome}>홈으로</button>
     </div>
   );
 }
