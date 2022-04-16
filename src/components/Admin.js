@@ -1,5 +1,6 @@
 import React from "react";
 import "./BootstrapTemplate/sb-admin-2.css";
+import "./Admin.css";
 import Card from "react-bootstrap/Card";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -13,7 +14,7 @@ function Admin(props) {
           {/* <!-- Content Wrapper --> */}
           <div id="content-wrapper" className="d-flex flex-column">
             {/* <!-- Main Content --> */}
-            <div id="content">
+            <div id="content" style={{height:"100vh"}}>
               {/* <!-- Topbar --> */}
               <nav className="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
                 {/* <!-- Topbar Navbar --> */}
@@ -29,14 +30,8 @@ function Admin(props) {
                       aria-haspopup="true"
                       aria-expanded="false"
                     >
-                      <span className="mr-2 d-none d-lg-inline text-gray-600 small">
-                        Douglas McGee
-                      </span>
-                      <img
-                        className="img-profile rounded-circle"
-                        src="/undraw_profile.svg"
-                        alt=""
-                      />
+                      <span className="mr-2 d-none d-lg-inline text-gray-600 small"> Douglas McGee </span>
+                      <img className="img-profile rounded-circle" src="/undraw_profile.svg" alt=""/>
                     </a>
                     {/* <!-- Dropdown - User Information --> */}
                     <div
@@ -62,40 +57,63 @@ function Admin(props) {
               <div className="container-fluid">
                 {/* <!-- Content Row --> */}
                 <div className="row">
-                  <Row xs={4} md={4} className="g-4">
-                    {Array.from({ length: 13 }).map((_, idx) => (
-                      <Col key={idx}>
-                        <Card
-                          border="light"
-                          style={{ width: "12rem" }}
-                          className="card shadow h-100"
-                        >
-                          <Card.Header>주문번호: 000</Card.Header>
-                          <Card.Body>
-                            <Card.Text>
-                              Some quick example text to build on the card title
-                              and make up the bulk of the card's content.
-                            </Card.Text>
-                          </Card.Body>
-                        </Card>
-                      </Col>
-                    ))}
-                  </Row>
+                  <div className="col-sm-3">
+                    <div class="card shadow">
+                      <h3 class="card-header">주문번호: 000</h3>
+                      <div class="card-body" style={{height: "60vh"}}>
+                        <h5 class="card-title">주문메뉴</h5>
+                        <hr/>
+                        <p class="card-text">
+                                  민트초코맛치킨 2개<br/>
+                                  치킨 1개<br/>
+                                  쿨피스 3개<br/>
+                                  떡볶이 1개<br/>
+                                  크림파스타 3개<br/>
+                                  감자튀김 3개<br/>
+                                  크림파스타세트 2개<br/>
+                          <hr/>
+                          결제금액: 0원
+                        </p>
+                      </div>
+                    </div>
+                    <div style={{display: "inline-block", width: "100%", height: "60px", position: "relative", top: "10px", margin:"0 0 30px 0"}}>
+                      <button id="orderCancel"className="btn btn-dark" style={{float: "left",width: "26%",height: "100%", fontWeight:"bold"}}>
+                          주문 취소
+                      </button>
+                      <button id="orderSuccess" className="btn btn-dark" style={{float: "right",width: "70%",height: "100%", fontWeight:"bold"}}>
+                          주문 완료
+                      </button>
+                    </div>
+                  </div>
+                  <div className="col-sm-9">
+                    <Row xs={2} sm={2} md={3} lg={4} xl={5} xxl={6} className="g-4">
+                      {Array.from({ length: 16 }).map((_, idx) => (
+                        <Col key={idx}>
+                          <button key={idx} style={{border: "none"}} onClick = {()=>console.log(idx + "번 클릭함")}>
+                            <Card border="light" style={{ width: "170px"}} className="card shadow h-100">
+                              <Card.Header>주문번호: {idx}</Card.Header>
+                              <Card.Body className="cardbody">
+                                <Card.Text className="cardtext">
+                                  민트초코맛치킨 2개<br/>
+                                  치킨 1개<br/>
+                                  쿨피스 3개<br/>
+                                  떡볶이 1개<br/>
+                                  크림파스타 3개<br/>
+                                  감자튀김 3개<br/>
+                                  크림파스타세트 2개<br/>
+                                </Card.Text>
+                              </Card.Body>
+                            </Card>
+                          </button>
+                        </Col>
+                      ))}
+                    </Row>
+                  </div>
                 </div>
               </div>
               {/* <!-- /.container-fluid --> */}
             </div>
             {/* <!-- End of Main Content --> */}
-
-            {/* <!-- Footer --> */}
-            <footer className="sticky-footer bg-white">
-              <div className="container my-auto">
-                <div className="copyright text-center my-auto">
-                  <span>Copyright &copy; SmartOrder.ml 2022</span>
-                </div>
-              </div>
-            </footer>
-            {/* <!-- End of Footer --> */}
           </div>
           {/* <!-- End of Content Wrapper --> */}
         </div>

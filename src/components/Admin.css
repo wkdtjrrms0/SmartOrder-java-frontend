@@ -1,0 +1,65 @@
+.cardtext{
+    overflow: hidden;
+text-overflow: ellipsis;
+display: -webkit-box;
+-webkit-line-clamp: 5;
+-webkit-box-orient: vertical;
+height:115px;
+}
+
+.cardbody{
+    overflow: hidden;
+text-overflow: ellipsis;
+white-space: nowrap;
+}
+.card-body{
+    overflow-y:auto; 
+}
+#orderCancel{
+        font-size: 19px
+    }
+#orderSuccess{
+        font-size: 30px
+    }
+@media (width <=1081px) {
+    #orderCancel{
+        font-size: 17px
+    }
+}
+@media (width <=1018px) {
+    #orderCancel{
+        font-size: 15px
+    }
+    #orderSuccess{
+        font-size: 21px
+    }
+}
+@media (width <=957px) {
+    #orderCancel{
+        font-size: 13px
+    }
+}
+@media (width <=895px) {
+    #orderCancel{
+        font-size: 10px
+    }
+}
+@media (width <=803px) {
+    #orderCancel{
+        font-size: 14px;
+        padding: 0;
+    }   
+}
+@media (width <=766px) {
+    #orderSuccess{
+        font-size: 20px;
+    }   
+}
+@media (width <=425px) {
+    #orderCancel{
+        font-size: 17px
+    }
+    #orderSuccess{
+        font-size: 30px
+    }
+}
