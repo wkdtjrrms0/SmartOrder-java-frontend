@@ -1,11 +1,55 @@
-import React from "react";
+import React,{ useState, useEffect } from "react";
 import "./BootstrapTemplate/sb-admin-2.css";
 import "./Admin.css";
+import { useParams } from "react-router-dom";
+import axios from 'axios';
 import Card from "react-bootstrap/Card";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
 function Admin(props) {
+  const { storeid } = useParams();
+  const [test, setTest] = useState([]);
+  const [test2, setTest2] = useState({
+    "id": 0,
+    "merchantUid": "",
+    "storeId": 0,
+    "isPackage": 0,
+    "totalPrice": 0,
+    "totalCount": 0,
+    "orderMenu": [
+      {
+        "menuId": 0,
+        "menuName": "",
+        "quantity": 0,
+        "price": 0
+      }
+    ]
+  });
+  const componentDidMount = async() => {
+    try {
+      setInterval(async () => {
+        let res = await axios.get('https://api.smartorder.ml/stores/' + storeid + '/orders');
+        console.log(res.data);
+        setTest(res.data);
+      }, 3000);
+    } catch(e) {
+      console.log(e);
+    }
+}
+useEffect(() => {
+  componentDidMount();
+}, []);
+
+
+
+
+
+
+
+
+
+
   return (
     <>
       <div id="page-top">
@@ -58,22 +102,22 @@ function Admin(props) {
                 {/* <!-- Content Row --> */}
                 <div className="row">
                   <div className="col-sm-3">
-                    <div class="card shadow">
-                      <h3 class="card-header">주문번호: 000</h3>
-                      <div class="card-body" style={{height: "60vh"}}>
-                        <h5 class="card-title">주문메뉴</h5>
+                    <div className="card shadow">
+                      <h3 className="card-header">주문번호 : {test2.merchantUid.split("-")[2]}</h3>
+                      <div className="card-body" style={{height: "60vh"}}>
+                        <h5 className="card-title">주문메뉴</h5>
                         <hr/>
-                        <p class="card-text">
-                                  민트초코맛치킨 2개<br/>
-                                  치킨 1개<br/>
-                                  쿨피스 3개<br/>
-                                  떡볶이 1개<br/>
-                                  크림파스타 3개<br/>
-                                  감자튀김 3개<br/>
-                                  크림파스타세트 2개<br/>
-                          <hr/>
-                          결제금액: 0원
+                        <p className="card-text">
+                                  {test2.orderMenu.map((ordermenu) => {
+                                  return(
+                                    <React.Fragment key={ordermenu.menuId}>
+                                      {ordermenu.menuName} {ordermenu.quantity}개 {ordermenu.price.toLocaleString()}원<br/>
+                                    </React.Fragment>
+                                    )
+                                  })}
                         </p>
+                        <hr/>
+                        결제금액: {test2.totalPrice.toLocaleString()}원
                       </div>
                     </div>
                     <div style={{display: "inline-block", width: "100%", height: "60px", position: "relative", top: "10px", margin:"0 0 30px 0"}}>
@@ -87,20 +131,20 @@ function Admin(props) {
                   </div>
                   <div className="col-sm-9">
                     <Row xs={2} sm={2} md={3} lg={4} xl={5} xxl={6} className="g-4">
-                      {Array.from({ length: 16 }).map((_, idx) => (
-                        <Col key={idx}>
-                          <button key={idx} style={{border: "none"}} onClick = {()=>console.log(idx + "번 클릭함")}>
+                      {test.map((order) => (
+                        <Col key={order.id}>
+                          <button key={order.id} style={{border: "none"}} onClick = {()=>setTest2(order)}>
                             <Card border="light" style={{ width: "170px"}} className="card shadow h-100">
-                              <Card.Header>주문번호: {idx}</Card.Header>
+                              <Card.Header>주문번호 : {order.merchantUid.split("-")[2]}</Card.Header>
                               <Card.Body className="cardbody">
                                 <Card.Text className="cardtext">
-                                  민트초코맛치킨 2개<br/>
-                                  치킨 1개<br/>
-                                  쿨피스 3개<br/>
-                                  떡볶이 1개<br/>
-                                  크림파스타 3개<br/>
-                                  감자튀김 3개<br/>
-                                  크림파스타세트 2개<br/>
+                                {order.orderMenu.map((ordermenu) => {
+                                  return(
+                                    <React.Fragment key={ordermenu.menuId}>
+                                      {ordermenu.menuName} {ordermenu.quantity}개 <br/>
+                                    </React.Fragment>
+                                    )
+                                  })}
                                 </Card.Text>
                               </Card.Body>
                             </Card>
