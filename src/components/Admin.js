@@ -28,7 +28,7 @@ function Admin(props) {
   });
   const orderSuccessButton = async() => {
     const response = await axios.post(
-      'https://api.smartorder.ml/' + storeid + '/orders/' + test2.merchantUid +'/complete'
+      'https://api.smartorder.ml/stores/' + storeid + '/orders/' + test2.merchantUid +'/complete'
       );
       setTest2({
         "id": 0,
@@ -50,7 +50,7 @@ function Admin(props) {
 
   const orderCancelButton = async() => {
     const response = await axios.post(
-      'https://api.smartorder.ml/' + storeid + '/orders/' + test2.merchantUid +'/cancel'
+      'https://api.smartorder.ml/stores/' + storeid + '/orders/' + test2.merchantUid +'/cancel'
       );
       setTest2({
         "id": 0,
