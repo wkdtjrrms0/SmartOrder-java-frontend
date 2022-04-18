@@ -26,6 +26,49 @@ function Admin(props) {
       }
     ]
   });
+  const orderSuccessButton = async() => {
+    const response = await axios.post(
+      'https://api.smartorder.ml/' + storeid + '/orders/' + test2.merchantUid +'/complete'
+      );
+      setTest2({
+        "id": 0,
+        "merchantUid": "",
+        "storeId": 0,
+        "isPackage": 0,
+        "totalPrice": 0,
+        "totalCount": 0,
+        "orderMenu": [
+          {
+            "menuId": 0,
+            "menuName": "",
+            "quantity": 0,
+            "price": 0
+          }
+        ]
+      });
+  }
+
+  const orderCancelButton = async() => {
+    const response = await axios.post(
+      'https://api.smartorder.ml/' + storeid + '/orders/' + test2.merchantUid +'/cancel'
+      );
+      setTest2({
+        "id": 0,
+        "merchantUid": "",
+        "storeId": 0,
+        "isPackage": 0,
+        "totalPrice": 0,
+        "totalCount": 0,
+        "orderMenu": [
+          {
+            "menuId": 0,
+            "menuName": "",
+            "quantity": 0,
+            "price": 0
+          }
+        ]
+      });
+  }
   const componentDidMount = async() => {
     try {
       setInterval(async () => {
@@ -121,10 +164,10 @@ useEffect(() => {
                       </div>
                     </div>
                     <div style={{display: "inline-block", width: "100%", height: "60px", position: "relative", top: "10px", margin:"0 0 30px 0"}}>
-                      <button id="orderCancel"className="btn btn-dark" style={{float: "left",width: "26%",height: "100%", fontWeight:"bold"}}>
+                      <button id="orderCancel"className="btn btn-dark" style={{float: "left",width: "26%",height: "100%", fontWeight:"bold"}} onClick={orderCancelButton}>
                           주문 취소
                       </button>
-                      <button id="orderSuccess" className="btn btn-dark" style={{float: "right",width: "70%",height: "100%", fontWeight:"bold"}}>
+                      <button id="orderSuccess" className="btn btn-dark" style={{float: "right",width: "70%",height: "100%", fontWeight:"bold"}} onClick={orderSuccessButton}>
                           주문 완료
                       </button>
                     </div>
