@@ -1,0 +1,142 @@
+.nav-order {
+    padding: 20px 0;
+    font-size: 30px;
+    height: 41px;
+    box-sizing: content-box;
+    line-height: normal;
+    margin: auto;
+    text-align: center;
+    background: black;
+    color: white;
+    top: 0px;
+    width: 425px;
+}
+
+.result-main {
+    font-size: 30px;
+    margin: auto;
+    width: 425px;
+    text-align: center;
+    line-height: 50px;
+    font-weight: 700;
+}
+
+.last {
+    font-size: 20px;
+    margin: auto;
+    width: 425px;
+    text-align: center;
+    line-height: 50px;
+    font-weight: 300;
+    border-bottom: 1px solid black ;
+}
+.sss{
+    font-size: 20px;
+    margin: auto;
+    width: 425px;
+    text-align: center;
+    letter-spacing: 5px;
+    line-height: 50px;
+    font-weight: 800;
+}
+.ss{
+    font-size: 20px;
+    margin: auto;
+    width: 425px;
+    text-align: center;
+    letter-spacing: 4px;
+    line-height: 50px;
+}
+
+
+
+
+
+.text-box {
+    margin-left: 44vw;
+   margin-top: 42vh;
+}
+
+.btn:link,
+.btn:visited {
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 15px 40px;
+    display: inline-block;
+    border-radius: 100px;
+    transition: all .2s;
+    position: absolute;
+}
+
+.btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.btn:active {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+.btn-white {
+    background-color: #fff;
+    color: #777;
+}
+
+.btn::after {
+    content: "";
+    display: inline-block;
+    height: 100%;
+    width: 100%;
+    border-radius: 100px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    transition: all .4s;
+}
+
+.receipt thead tr{
+    border-top: 1px solid gray;
+    border-bottom: 1px solid gray;
+}
+.receipt tbody{
+    border-bottom: 1px solid gray;
+}
+.receipt thead tr{
+    text-align : center;
+}
+.receipt tbody tr{
+    text-align : right;
+}
+.receipt{
+    width: 100%;
+    margin: auto;
+    table-layout: fixed;
+}
+.amount{
+    text-align : right;
+}
+.receiptDiv{
+    width: 350px;
+    margin: auto;
+}
+.menuName{
+    width: 150px;
+    overflow: hidden;
+text-overflow: ellipsis;
+white-space: nowrap;
+}
+.quantity{
+    width: 80px;
+    overflow: hidden;
+text-overflow: ellipsis;
+white-space: nowrap;
+}
+.price{
+    width: 100px;
+    overflow: hidden;
+text-overflow: ellipsis;
+white-space: nowrap;
+}
+

@@ -9,12 +9,12 @@ import Col from "react-bootstrap/Col";
 
 function Admin(props) {
   const { storeid } = useParams();
-  const [test, setTest] = useState([]);
-  const [test2, setTest2] = useState({
+  const [orderList, setOrderList] = useState([]);
+  const [pick, setPick] = useState({
     "id": 0,
     "merchantUid": "",
     "storeId": 0,
-    "isPackage": 0,
+    "isPackage": -1,
     "totalPrice": 0,
     "totalCount": 0,
     "orderMenu": [
@@ -26,15 +26,24 @@ function Admin(props) {
       }
     ]
   });
+  const isPackageF = (n) => {
+    if(n === 0) {
+      return "매장주문"
+    } else if (n === 1){
+      return "포장주문"
+    } else {
+      return ""
+    }
+  }
   const orderSuccessButton = async() => {
-    const response = await axios.post(
-      'https://api.smartorder.ml/stores/' + storeid + '/orders/' + test2.merchantUid +'/complete'
+    await axios.post(
+      'https://api.smartorder.ml/stores/' + storeid + '/orders/' + pick.merchantUid +'/complete'
       );
-      setTest2({
+      setPick({
         "id": 0,
         "merchantUid": "",
         "storeId": 0,
-        "isPackage": 0,
+        "isPackage": -1,
         "totalPrice": 0,
         "totalCount": 0,
         "orderMenu": [
@@ -49,14 +58,14 @@ function Admin(props) {
   }
 
   const orderCancelButton = async() => {
-    const response = await axios.post(
-      'https://api.smartorder.ml/stores/' + storeid + '/orders/' + test2.merchantUid +'/cancel'
+    await axios.post(
+      'https://api.smartorder.ml/stores/' + storeid + '/orders/' + pick.merchantUid +'/cancel'
       );
-      setTest2({
+      setPick({
         "id": 0,
         "merchantUid": "",
         "storeId": 0,
-        "isPackage": 0,
+        "isPackage": -1,
         "totalPrice": 0,
         "totalCount": 0,
         "orderMenu": [
@@ -74,7 +83,7 @@ function Admin(props) {
       setInterval(async () => {
         let res = await axios.get('https://api.smartorder.ml/stores/' + storeid + '/orders');
         console.log(res.data);
-        setTest(res.data);
+        setOrderList(res.data);
       }, 3000);
     } catch(e) {
       console.log(e);
@@ -146,12 +155,12 @@ useEffect(() => {
                 <div className="row">
                   <div className="col-sm-3">
                     <div className="card shadow">
-                      <h3 className="card-header">주문번호 : {test2.merchantUid.split("-")[2]}</h3>
+                      <h3 className="card-header">주문번호: {pick.merchantUid.split("-")[2]}</h3>
                       <div className="card-body" style={{height: "60vh"}}>
-                        <h5 className="card-title">주문메뉴</h5>
+                        <h5 className="card-title">식사유형: ({isPackageF(pick.isPackage)})</h5>
                         <hr/>
                         <p className="card-text">
-                                  {test2.orderMenu.map((ordermenu) => {
+                                  {pick.orderMenu.map((ordermenu) => {
                                   return(
                                     <React.Fragment key={ordermenu.menuId}>
                                       {ordermenu.menuName} {ordermenu.quantity}개 {ordermenu.price.toLocaleString()}원<br/>
@@ -160,7 +169,7 @@ useEffect(() => {
                                   })}
                         </p>
                         <hr/>
-                        결제금액: {test2.totalPrice.toLocaleString()}원
+                        결제금액: {pick.totalPrice.toLocaleString()}원
                       </div>
                     </div>
                     <div style={{display: "inline-block", width: "100%", height: "60px", position: "relative", top: "10px", margin:"0 0 30px 0"}}>
@@ -174,9 +183,9 @@ useEffect(() => {
                   </div>
                   <div className="col-sm-9">
                     <Row xs={2} sm={2} md={3} lg={4} xl={5} xxl={6} className="g-4">
-                      {test.map((order) => (
+                      {orderList.map((order) => (
                         <Col key={order.id}>
-                          <button key={order.id} style={{border: "none"}} onClick = {()=>setTest2(order)}>
+                          <button key={order.id} style={{border: "none"}} onClick = {()=>setPick(order)}>
                             <Card border="light" style={{ width: "170px"}} className="card shadow h-100">
                               <Card.Header>주문번호 : {order.merchantUid.split("-")[2]}</Card.Header>
                               <Card.Body className="cardbody">

@@ -49,32 +49,45 @@ const OrderRequest = () => {
 
   return (
     <div>
-      {resultMessage.split("_")[0]}
-      <br />
-      주문번호: {resultMessage.split("_")[1]}
-      <br />
-      주문내역
-      <br />
-      <ul>
-        {orderMenu.map((ordermenu) => {
-          return (
-            <React.Fragment key={ordermenu.menuId}>
-              <li className="menulist" key={ordermenu.menuId}>
-                <span className="menuInfo">
-                  <p className="menuName">{ordermenu.menuName}</p>
-                  <p className="menuPrice">{ordermenu.quantity}개</p>
-                  <p className="menuPrice">{ordermenu.price}원</p>
-                </span>
-              </li>
-            </React.Fragment>
-          );
-        })}
-      </ul>
-      결제금액: {totalPrice.toLocaleString()}원<br />
-      <button type="button" onClick={goHome}>
-        홈으로
-      </button>
-    </div>
+    <div className="nav-order">주문 내역</div>
+      <div className="result-main">{resultMessage.split('_')[0]}</div>
+      <p className="result-main">주문번호 : {resultMessage.split('_')[1]}</p>
+          <br/>
+          <div className="receiptDiv">
+         <table className="receipt">
+            <thead>
+              <tr>
+              <th className="menuName">상품명</th><th className="quantity">수량</th><th className="price">금액</th>
+              </tr>
+            </thead>
+            <tbody>
+            {orderMenu.map((ordermenu) => {
+            return (
+                <React.Fragment key={ordermenu.menuId}>
+                  <tr>
+	                  <td className="menuName">{ordermenu.menuName}</td>
+	                  <td className="quantity">{ordermenu.quantity}개</td>
+                    <td className="price">{ordermenu.price.toLocaleString()}원</td>
+	                </tr>
+                </React.Fragment>
+            );
+          })}
+          </tbody>
+          </table>
+          <p className="amount">결제금액 : {totalPrice.toLocaleString()}원</p><br/>
+          <button className="btn btn-dark" style ={{
+    margin:"auto",
+    width: "150px",
+    position:"relative",
+    left: "50%",
+    transform:"translateX(-50%)"
+}}type="button" onClick={goHome}>
+            <h2>홈으로</h2>
+        </button>
+          </div>
+        
+    
+</div>
   );
 };
 
