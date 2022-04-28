@@ -8,6 +8,9 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
 function Admin(props) {
+  const [accessToken, setAccessToken] = useState(
+    "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0SUQiLCJhdXRoIjoiUk9MRV9BRE1JTiIsImV4cCI6MTY1MTE3MDQ0N30.HyjkyHT0DuIOlv9-8Tpcp8e-RD6RJrZiTf5gK19C1d55ozySNBzPGdA28o5di4QYDyArC07pa0l0KHDOij-lGA"
+  )
   const { storeid } = useParams();
   const [orderList, setOrderList] = useState([]);
   const [pick, setPick] = useState({
@@ -78,10 +81,14 @@ function Admin(props) {
         ]
       });
   }
-  const componentDidMount = async() => {
+    const componentDidMount = async() => {
     try {
       setInterval(async () => {
-        let res = await axios.get('https://api.smartorder.ml/stores/' + storeid + '/orders');
+        let res = await axios.get('https://api.smartorder.ml/stores/' + storeid + '/orders',{
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+        }
+        });
         console.log(res.data);
         setOrderList(res.data);
       }, 3000);
