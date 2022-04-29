@@ -9,6 +9,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 const cart = {
   storeId: null,
+  storeLoginId: null,
   isPackage: null,
   totalPrice: 0,
   totalCount: 0,
@@ -20,7 +21,8 @@ const cart = {
       quantity: 0,
       price: 0
     }
-  ]
+  ],
+  accessToken: ""
 }
 
 function getTotalPrice(arr) {
@@ -112,6 +114,15 @@ function reducer(state = cart, action) {
     state.isPackage = action.payload.isPackage;
     return state;
   }
+  else if (action.type === 'setTokenAndStoreId') {
+    state.accessToken = action.payload.token
+    state.storeLoginId = action.payload.id
+    return state;
+  }
+  else if (action.type === 'setStoreID') {
+    state.storeId = action.payload.storeId;
+    return state;
+  }
   else {
     return state;
   }
@@ -121,7 +132,7 @@ let store = createStore(reducer)
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+        <App />
     </Provider>
   </React.StrictMode>,
   document.getElementById('root')

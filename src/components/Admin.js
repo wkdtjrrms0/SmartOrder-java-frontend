@@ -1,17 +1,15 @@
 import React,{ useState, useEffect } from "react";
 import "./BootstrapTemplate/sb-admin-2.css";
 import "./Admin.css";
-import { useParams } from "react-router-dom";
 import axios from 'axios';
 import Card from "react-bootstrap/Card";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import { useDispatch, useSelector } from "react-redux";
 
 function Admin(props) {
-  const [accessToken, setAccessToken] = useState(
-    "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0SUQiLCJhdXRoIjoiUk9MRV9BRE1JTiIsImV4cCI6MTY1MTE3MDQ0N30.HyjkyHT0DuIOlv9-8Tpcp8e-RD6RJrZiTf5gK19C1d55ozySNBzPGdA28o5di4QYDyArC07pa0l0KHDOij-lGA"
-  )
-  const { storeid } = useParams();
+  const cart = useSelector((state) => state);
+  const dispatch = useDispatch();
   const [orderList, setOrderList] = useState([]);
   const [pick, setPick] = useState({
     "id": 0,
@@ -40,7 +38,7 @@ function Admin(props) {
   }
   const orderSuccessButton = async() => {
     await axios.post(
-      'https://api.smartorder.ml/stores/' + storeid + '/orders/' + pick.merchantUid +'/complete'
+      'https://api.smartorder.ml/stores/' + cart.storeId + '/orders/' + pick.merchantUid +'/complete'
       );
       setPick({
         "id": 0,
@@ -62,7 +60,7 @@ function Admin(props) {
 
   const orderCancelButton = async() => {
     await axios.post(
-      'https://api.smartorder.ml/stores/' + storeid + '/orders/' + pick.merchantUid +'/cancel'
+      'https://api.smartorder.ml/stores/' + cart.storeId + '/orders/' + pick.merchantUid +'/cancel'
       );
       setPick({
         "id": 0,
@@ -84,13 +82,20 @@ function Admin(props) {
     const componentDidMount = async() => {
     try {
       setInterval(async () => {
-        let res = await axios.get('https://api.smartorder.ml/stores/' + storeid + '/orders',{
+        let res = await axios.get('https://api.smartorder.ml/stores/' + cart.storeId + '/orders',{
           headers: {
-            Authorization: `Bearer ${accessToken}`
+            Authorization: `Bearer ${cart.accessToken}`
         }
         });
-        console.log(res.data);
         setOrderList(res.data);
+        if(res.data.length !== 0){
+          dispatch({
+            type: "setStoreID",
+            payload: {
+              storeId: res.data[0].storeId,
+            },
+          });
+        }
       }, 3000);
     } catch(e) {
       console.log(e);
@@ -133,7 +138,7 @@ useEffect(() => {
                       aria-haspopup="true"
                       aria-expanded="false"
                     >
-                      <span className="mr-2 d-none d-lg-inline text-gray-600 small"> Douglas McGee </span>
+                      <span className="mr-2 d-none d-lg-inline text-gray-600 small"> {cart.storeLoginId} </span>
                       <img className="img-profile rounded-circle" src="/undraw_profile.svg" alt=""/>
                     </a>
                     {/* <!-- Dropdown - User Information --> */}

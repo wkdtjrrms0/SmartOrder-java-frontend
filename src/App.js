@@ -12,13 +12,12 @@ function App() {
   return (  
     <BrowserRouter>
       <Routes>
-        {/* pc개발용 기본페이지 리다이렉트. 향후 삭제 예정 */}
         <Route path="/" element={<Navigate replace to="/adminlogin"/>} />
         <Route path = "/stores/:storeid" element = {<Store/>} />
         <Route path = "/stores/:storeid/ispackage/:ispackage/categories/:categoryid" element = {<Order/>} />
         <Route path = "/stores/:storeid/payments/complete" element = {<OrderRequest/>} />
         <Route path = "/adminlogin" element = {<AdminLogin/>} />
-        <Route path = "/stores/:storeid/admin" element = {<Admin/>} />
+        <Route path = "/admin" element = {<Admin/>} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>

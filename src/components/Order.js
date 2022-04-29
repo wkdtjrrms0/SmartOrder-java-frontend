@@ -94,7 +94,7 @@ const Order = () => {
   }, []);
 
   function callback(response) {
-    const { success, merchant_uid, error_msg } = response;
+    const { success, error_msg } = response;
     if (success) {
       navigate("/payments/complete");
     } else {
