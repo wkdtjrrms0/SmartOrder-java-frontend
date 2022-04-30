@@ -6,8 +6,17 @@ import Card from "react-bootstrap/Card";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { useDispatch, useSelector } from "react-redux";
+import Modal from 'react-bootstrap/Modal'
+import Button from 'react-bootstrap/Button'
 
 function Admin(props) {
+  const [show, setShow] = useState(false);
+  const [isTokenShow, setIsTokenShow] = useState({margin:"auto", display:"none"});
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+  const handleLogout = () => {
+    window.location.assign('https://www.smartorder.ml/adminlogin');
+  }
   const cart = useSelector((state) => state);
   const dispatch = useDispatch();
   const [orderList, setOrderList] = useState([]);
@@ -80,6 +89,9 @@ function Admin(props) {
       });
   }
     const componentDidMount = async() => {
+      if(cart.accessToken !== ""){
+        setIsTokenShow({margin:"auto"});
+      }
     try {
       setInterval(async () => {
         let res = await axios.get('https://api.smartorder.ml/stores/' + cart.storeId + '/orders',{
@@ -127,36 +139,32 @@ useEffect(() => {
               <nav className="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
                 {/* <!-- Topbar Navbar --> */}
                 <ul className="navbar-nav ml-auto">
-                  {/* <!-- Nav Item - User Information --> */}
-                  <li className="nav-item dropdown no-arrow">
-                    <a
-                      className="nav-link dropdown-toggle"
-                      href="#1"
-                      id="userDropdown"
-                      role="button"
-                      data-toggle="dropdown"
-                      aria-haspopup="true"
-                      aria-expanded="false"
-                    >
-                      <span className="mr-2 d-none d-lg-inline text-gray-600 small"> {cart.storeLoginId} </span>
+{/* <!-- Nav Item - User Information --> */}
+<div className="nav-item dropdown no-arrow">
+                    <div variant="success" className="nav-link dropdown-toggle">
                       <img className="img-profile rounded-circle" src="/undraw_profile.svg" alt=""/>
-                    </a>
-                    {/* <!-- Dropdown - User Information --> */}
-                    <div
-                      className="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                      aria-labelledby="userDropdown"
-                    >
-                      <a
-                        className="dropdown-item"
-                        href="#1"
-                        data-toggle="modal"
-                        data-target="#logoutModal"
-                      >
-                        <i className="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                        Logout
-                      </a>
+                      &nbsp;&nbsp;
+                      <span className="mr-2 d-none d-lg-inline text-gray-600 small"> {cart.storeLoginId}님, 환영합니다! </span>
                     </div>
-                  </li>
+                  </div>
+                
+                <Button variant="dark" style ={isTokenShow} onClick={handleShow} size="sm">로그아웃</Button>
+
+      <Modal show={show} onHide={handleClose} backdrop="static" keyboard={false}>
+        <Modal.Header closeButton>
+          <Modal.Title>로그아웃</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          "예" 버튼을 클릭하면 로그아웃 됩니다. 로그아웃 하시겠습니까?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            아니오
+          </Button>
+          <Button variant="primary" style ={{width:"70px"}} onClick={handleLogout}>예</Button>
+        </Modal.Footer>
+      </Modal>
+                  
                 </ul>
               </nav>
               {/* <!-- End of Topbar --> */}
@@ -227,49 +235,7 @@ useEffect(() => {
         </div>
         {/* <!-- End of Page Wrapper --> */}
 
-        {/* <!-- Logout Modal--> */}
-        <div
-          className="modal fade"
-          id="logoutModal"
-          tabIndex="-1"
-          role="dialog"
-          aria-labelledby="exampleModalLabel"
-          aria-hidden="true"
-        >
-          <div className="modal-dialog" role="document">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title" id="exampleModalLabel">
-                  Ready to Leave?
-                </h5>
-                <button
-                  className="close"
-                  type="button"
-                  data-dismiss="modal"
-                  aria-label="Close"
-                >
-                  <span aria-hidden="true">×</span>
-                </button>
-              </div>
-              <div className="modal-body">
-                Select "Logout" below if you are ready to end your current
-                session.
-              </div>
-              <div className="modal-footer">
-                <button
-                  className="btn btn-secondary"
-                  type="button"
-                  data-dismiss="modal"
-                >
-                  Cancel
-                </button>
-                <a className="btn btn-primary" href="login.html">
-                  Logout
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
+        
 
         {/* <!-- Bootstrap core JavaScript--> */}
         <script src="./BootstrapTemplate/jquery.min.js"></script>
