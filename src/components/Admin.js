@@ -1,25 +1,28 @@
-import React,{ useState, useEffect } from "react";
+import React,{ useState, useEffect, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import "./BootstrapTemplate/sb-admin-2.css";
 import "./Admin.css";
 import axios from 'axios';
 import Card from "react-bootstrap/Card";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import { useDispatch, useSelector } from "react-redux";
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 
 function Admin(props) {
+  const cart = useSelector((state) => state);
+  const dispatch = useDispatch();
   const [show, setShow] = useState(false);
   const [isTokenShow, setIsTokenShow] = useState({margin:"auto", display:"none"});
+  const [orderList, setOrderList] = useState([]);
+  let audio = new Audio("/sounds/orderSound.wav")
+  const prevValue = usePrevState(orderList.length);
+
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const handleLogout = () => {
     window.location.assign('https://www.smartorder.ml/adminlogin');
   }
-  const cart = useSelector((state) => state);
-  const dispatch = useDispatch();
-  const [orderList, setOrderList] = useState([]);
   const [pick, setPick] = useState({
     "id": 0,
     "merchantUid": "",
@@ -66,7 +69,6 @@ function Admin(props) {
         ]
       });
   }
-
   const orderCancelButton = async() => {
     await axios.post(
       'https://api.smartorder.ml/stores/' + cart.storeId + '/orders/' + pick.merchantUid +'/cancel'
@@ -88,10 +90,8 @@ function Admin(props) {
         ]
       });
   }
-    const componentDidMount = async() => {
-      if(cart.accessToken !== ""){
-        setIsTokenShow({margin:"auto"});
-      }
+  const componentDidMount = async() => {
+    if(cart.accessToken !== ""){setIsTokenShow({margin:"auto"});}
     try {
       setInterval(async () => {
         let res = await axios.get('https://api.smartorder.ml/stores/' + cart.storeId + '/orders',{
@@ -112,66 +112,52 @@ function Admin(props) {
     } catch(e) {
       console.log(e);
     }
-}
-useEffect(() => {
-  componentDidMount();
-}, []);
-
-
-
-
-
-
-
-
-
+  }
+  
+  function usePrevState(state) { 
+    const ref = useRef(state); 
+    useEffect(() => { 
+      if(ref.current < state){
+        audio.play();
+      }
+      ref.current = state; }, [state]
+    ); 
+    return ref.current; 
+  }
+  
+  useEffect(() => {
+    componentDidMount();
+  }, []);
 
   return (
     <>
       <div id="page-top">
-        {/* <!-- Page Wrapper --> */}
         <div id="wrapper">
-          {/* <!-- Content Wrapper --> */}
           <div id="content-wrapper" className="d-flex flex-column">
-            {/* <!-- Main Content --> */}
             <div id="content" style={{height:"100vh"}}>
-              {/* <!-- Topbar --> */}
               <nav className="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-                {/* <!-- Topbar Navbar --> */}
                 <ul className="navbar-nav ml-auto">
-{/* <!-- Nav Item - User Information --> */}
-<div className="nav-item dropdown no-arrow">
+                  <div className="nav-item dropdown no-arrow">
                     <div variant="success" className="nav-link dropdown-toggle">
                       <img className="img-profile rounded-circle" src="/undraw_profile.svg" alt=""/>
                       &nbsp;&nbsp;
                       <span className="mr-2 d-none d-lg-inline text-gray-600 small"> {cart.storeLoginId}님, 환영합니다! </span>
                     </div>
                   </div>
-                
-                <Button variant="dark" style ={isTokenShow} onClick={handleShow} size="sm">로그아웃</Button>
-
-      <Modal show={show} onHide={handleClose} backdrop="static" keyboard={false}>
-        <Modal.Header closeButton>
-          <Modal.Title>로그아웃</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          "예" 버튼을 클릭하면 로그아웃 됩니다. 로그아웃 하시겠습니까?
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            아니오
-          </Button>
-          <Button variant="primary" style ={{width:"70px"}} onClick={handleLogout}>예</Button>
-        </Modal.Footer>
-      </Modal>
-                  
+                  <Button variant="dark" style ={isTokenShow} onClick={handleShow} size="sm">로그아웃</Button>
+                  <Modal show={show} onHide={handleClose} backdrop="static" keyboard={false}>
+                    <Modal.Header closeButton>
+                      <Modal.Title>로그아웃</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>"예" 버튼을 클릭하면 로그아웃 됩니다. 로그아웃 하시겠습니까?</Modal.Body>
+                    <Modal.Footer>
+                      <Button variant="secondary" onClick={handleClose}>아니오</Button>
+                      <Button variant="primary" style ={{width:"70px"}} onClick={handleLogout}>예</Button>
+                    </Modal.Footer>
+                  </Modal>
                 </ul>
               </nav>
-              {/* <!-- End of Topbar --> */}
-
-              {/* <!-- Begin Page Content --> */}
               <div className="container-fluid">
-                {/* <!-- Content Row --> */}
                 <div className="row">
                   <div className="col-sm-3">
                     <div className="card shadow">
@@ -227,30 +213,15 @@ useEffect(() => {
                   </div>
                 </div>
               </div>
-              {/* <!-- /.container-fluid --> */}
             </div>
-            {/* <!-- End of Main Content --> */}
           </div>
-          {/* <!-- End of Content Wrapper --> */}
         </div>
-        {/* <!-- End of Page Wrapper --> */}
-
         
-
-        {/* <!-- Bootstrap core JavaScript--> */}
         <script src="./BootstrapTemplate/jquery.min.js"></script>
         <script src="./BootstrapTemplate/bootstrap.bundle.min.js"></script>
-
-        {/* <!-- Core plugin JavaScript--> */}
         <script src="./BootstrapTemplate/jquery.easing.min.js"></script>
-
-        {/* <!-- Custom scripts for all pages--> */}
         <script src="./BootstrapTemplate/sb-admin-2.min.js"></script>
-
-        {/* <!-- Page level plugins --> */}
         <script src="./BootstrapTemplate/Chart.min.js"></script>
-
-        {/* <!-- Page level custom scripts --> */}
         <script src="./BootstrapTemplate/chart-area-demo.js"></script>
         <script src="./BootstrapTemplate/chart-pie-demo.js"></script>
       </div>
