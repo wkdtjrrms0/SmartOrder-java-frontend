@@ -3,21 +3,36 @@ import './Store.css';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useDispatch } from 'react-redux'
+import { firebaseApp } from "./firebase";
 
 const Store = () => {
     const [stores, setStores] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [fcmToken, setFcmToken] = useState(null);
     const { storeid } = useParams();
     const dispatch = useDispatch()
     const navigate = useNavigate();
+
+    const firebaseMessaging = firebaseApp.messaging();
+    window.Notification.requestPermission().then(() => {
+        return firebaseMessaging.getToken(); // 등록 토큰 받기
+      })
+      .then(function (token) {
+        console.log(token); //토큰 출력
+        setFcmToken(token);
+      })
+      .catch(function (error) {
+        console.log("FCM Error : ", error);
+      });
 
     const eatingRestaurant = () => {
         dispatch({
             type: "StoreInfo",
             payload: {
                 storeId: parseInt(storeid),
-                isPackage: 0
+                isPackage: 0,
+                fcmToken: fcmToken
             }
         });
         navigate('/stores/' + storeid + '/ispackage/' + 0 + '/categories/' + 0);
@@ -28,7 +43,8 @@ const Store = () => {
             type: "StoreInfo",
             payload: {
                 storeId: parseInt(storeid),
-                isPackage: 1
+                isPackage: 1,
+                fcmToken: fcmToken
             }
         });
         navigate('/stores/' + storeid + '/ispackage/' + 1 + '/categories/' + 0);

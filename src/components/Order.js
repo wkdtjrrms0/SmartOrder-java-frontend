@@ -58,6 +58,7 @@ const Order = () => {
       payload: {
         storeId: parseInt(storeid),
         isPackage: parseInt(ispackage),
+        fcmToken: cart.fcmToken
       },
     });
     const OrderRequestAPI =

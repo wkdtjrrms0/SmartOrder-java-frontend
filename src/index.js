@@ -22,7 +22,8 @@ const cart = {
       price: 0
     }
   ],
-  accessToken: ""
+  accessToken: "",
+  fcmToken: null
 }
 
 function getTotalPrice(arr) {
@@ -112,6 +113,7 @@ function reducer(state = cart, action) {
   else if (action.type === 'StoreInfo') {
     state.storeId = action.payload.storeId;
     state.isPackage = action.payload.isPackage;
+    state.fcmToken = action.payload.fcmToken;
     return state;
   }
   else if (action.type === 'setTokenAndStoreId') {

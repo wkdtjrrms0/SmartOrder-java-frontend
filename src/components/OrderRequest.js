@@ -3,8 +3,19 @@ import { useParams, useNavigate } from "react-router-dom";
 import "./OrderRequest.css";
 import axios from "axios";
 import queryString from "query-string";
+import { firebaseApp } from "./firebase";
 
 const OrderRequest = () => {
+  const firebaseMessaging = firebaseApp.messaging();
+firebaseMessaging.onMessage((payload) => {
+    console.log(payload.notification.title);
+    console.log(payload.notification.body);
+    alert("주문이 완료되었습니다. 픽업대에서 제품을 수령해주세요.")
+});
+    
+
+
+
   const [resultMessage, setResultMessage] = useState("");
   const [orderMenu, setOrderMenu] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
