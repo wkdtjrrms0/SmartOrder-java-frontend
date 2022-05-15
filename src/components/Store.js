@@ -10,44 +10,75 @@ const Store = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [fcmToken, setFcmToken] = useState(null);
+    const [deniedPermission, setDeniedPermission] = useState(false);
     const { storeid } = useParams();
     const dispatch = useDispatch()
     const navigate = useNavigate();
 
-    const firebaseMessaging = firebaseApp.messaging();
-    window.Notification.requestPermission().then(() => {
-        return firebaseMessaging.getToken(); // 등록 토큰 받기
-      })
-      .then(function (token) {
-        console.log(token); //토큰 출력
-        setFcmToken(token);
-      })
-      .catch(function (error) {
-        console.log("FCM Error : ", error);
-      });
+    const fcm = () => {
+        const firebaseMessaging = firebaseApp.messaging();
+        if (!window.Notification) { //알림호환 브라우저 체크
+            alert("이 브라우저는 알림기능을 지원하지 않습니다.(ex. Safari on iOS)");
+            setDeniedPermission(true);
+        } 
+        else if (window.Notification.permission === 'granted'){ //이미 권한이 있는경우
+            firebaseMessaging.getToken() // 등록 토큰 받기
+            .then(function (token) {
+                console.log("이미 권한이 있는 경우", token); //토큰 출력
+                setFcmToken(token);
+            }).catch(function (error) {
+                console.log("FCM Error : ", error);
+            });
+        }
+        else if (window.Notification.permission !== 'denied'){ //최초실행(거절이 아닌경우)
+            window.Notification.requestPermission().then(() => {
+                return firebaseMessaging.getToken(); // 등록 토큰 받기
+            }).then(function (token) {
+                console.log("최초실행", token);  //토큰 출력
+                setFcmToken(token);
+            }).catch(function (error) {
+                console.log("FCM Error : ", error);
+                setDeniedPermission(true);
+            });
+        }
+        else if (window.Notification.permission === 'denied'){ //알림권한이 거절인 경우
+            setDeniedPermission(true);
+            alert("알림권한이 차단되어 있습니다. 사이트설정에서 알림권한을 허용하여 주문알림을 받아보세요!")
+        }
+    }
 
     const eatingRestaurant = () => {
-        dispatch({
-            type: "StoreInfo",
-            payload: {
-                storeId: parseInt(storeid),
-                isPackage: 0,
-                fcmToken: fcmToken
-            }
-        });
-        navigate('/stores/' + storeid + '/ispackage/' + 0 + '/categories/' + 0);
+        if(fcmToken !== null || deniedPermission === true){
+            dispatch({
+                type: "StoreInfo",
+                payload: {
+                    storeId: parseInt(storeid),
+                    isPackage: 0,
+                    fcmToken: fcmToken
+                }
+            });
+            navigate('/stores/' + storeid + '/ispackage/' + 0 + '/categories/' + 0);
+        }
+        else{
+            alert("알림토큰을 수신중입니다. 원활한 주문을 위해 잠시후 다시 진행해 주세요.")
+        }
     }; /* 매장주문 버튼 */
 
     const eatingOutside = () => {
-        dispatch({
-            type: "StoreInfo",
-            payload: {
-                storeId: parseInt(storeid),
-                isPackage: 1,
-                fcmToken: fcmToken
-            }
-        });
-        navigate('/stores/' + storeid + '/ispackage/' + 1 + '/categories/' + 0);
+        if(fcmToken !== null || deniedPermission === true){
+            dispatch({
+                type: "StoreInfo",
+                payload: {
+                    storeId: parseInt(storeid),
+                    isPackage: 1,
+                    fcmToken: fcmToken
+                }
+            });
+            navigate('/stores/' + storeid + '/ispackage/' + 1 + '/categories/' + 0);
+        }
+        else{
+            alert("알림토큰을 수신중입니다. 원활한 주문을 위해 잠시후 다시 진행해 주세요.")
+        }
     }; /* 포장주문 버튼 */
 
     const fetchStores = async () => {
@@ -66,6 +97,7 @@ const Store = () => {
     }; /* 매장정보 API 호출 */
 
     useEffect(() => {
+        fcm();
         fetchStores();
     }, []);
 

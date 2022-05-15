@@ -3,11 +3,14 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import "./Order.css";
 import axios from "axios";
+import { firebaseApp } from "./firebase";
 
 const Order = () => {
   const [storeInfo, setStoreInfo] = useState([]);
   const [categoryName, setCategoryName] = useState([]);
   const [categoryPick, setCategoryPick] = useState([]);
+  const [fcmToken, setFcmToken] = useState(null);
+  const [deniedPermission, setDeniedPermission] = useState(false);
   const { storeid } = useParams();
   const { ispackage } = useParams();
   const { categoryid } = useParams();
@@ -15,6 +18,39 @@ const Order = () => {
   const [sumPrice, setPrice] = useState(0);
   const cart = useSelector((state) => state);
   const dispatch = useDispatch();
+
+  const fcm = () => {
+    const firebaseMessaging = firebaseApp.messaging();
+    if (!window.Notification) { //알림호환 브라우저 체크
+        console.log("이 브라우저는 알림기능을 지원하지 않습니다.(ex. Safari on iOS)");
+        setDeniedPermission(true);
+    } 
+    else if (window.Notification.permission === 'granted'){ //이미 권한이 있는경우
+        firebaseMessaging.getToken() // 등록 토큰 받기
+        .then(function (token) {
+            console.log("이미 권한이 있는 경우", token); //토큰 출력
+            setFcmToken(token);
+        }).catch(function (error) {
+            console.log("FCM Error : ", error);
+        });
+    }
+    else if (window.Notification.permission !== 'denied'){ //최초실행(거절이 아닌경우)
+        window.Notification.requestPermission().then(() => {
+            return firebaseMessaging.getToken(); // 등록 토큰 받기
+        }).then(function (token) {
+            console.log("최초실행", token);  //토큰 출력
+            setFcmToken(token);
+        }).catch(function (error) {
+            console.log("FCM Error : ", error);
+            setDeniedPermission(true);
+        });
+    }
+    else if (window.Notification.permission === 'denied'){ //알림권한이 거절인 경우
+        setDeniedPermission(true);
+        console.log("알림권한이 차단되어 있습니다. 사이트설정에서 알림권한을 허용하여 주문알림을 받아보세요!")
+    }
+}
+
   const activeCategory = (btn) => {
     navigate(
       "/stores/" + storeid + "/ispackage/" + ispackage + "/categories/" + btn
@@ -53,44 +89,53 @@ const Order = () => {
     );
   };
   const payMent = async () => {
-    dispatch({
-      type: "StoreInfo",
-      payload: {
-        storeId: parseInt(storeid),
-        isPackage: parseInt(ispackage),
-        fcmToken: cart.fcmToken
-      },
-    });
-    const OrderRequestAPI =
-      "https://api.smartorder.ml/stores/" + cart.storeId + "/orders";
-    const axiosConfig = {
-      headers: { "Content-Type": "application/json" },
-    };
-    const getMerchantUid = await axios.post(
-      OrderRequestAPI,
-      JSON.stringify(cart),
-      axiosConfig
-    );
-    const data = {
-      pg: "html5_inicis",
-      pay_method: "card",
-      merchant_uid: getMerchantUid.data,
-      amount: cart.totalPrice,
-      name: cart.orderMenu[0].menuName + " " + cart.countMessage,
-      buyer_name: "테스트",
-      buyer_tel: "",
-      buyer_email: "username@example.com",
-      m_redirect_url:
-        "https://www.smartorder.ml/stores/" +
-        storeInfo.id +
-        "/payments/complete",
-    }; /* 결제 데이터 {PG사, 결제수단, 주문번호, 결제금액, 주문명, 고객이름, 고객전화번호, 고객이메일, 모바일리다이렉트url} */
-    console.log(data);
-    const IMP = window.IMP; /* 1. IMP객체 초기화 */
-    IMP.init(storeInfo.impCode); /* 2. 가맹점 식별코드로 IMP객체 초기화 */
-    IMP.request_pay(data, callback); /* 3. 결제창 호출 */
+    let ftk = null;
+    if(cart.fcmToken !== null || fcmToken !== null || deniedPermission === true){
+      if(cart.fcmToken !== null){ftk = cart.fcmToken} //초기화면의 토큰 사용
+      else if(fcmToken !== null){ftk = fcmToken} //메뉴화면의 토큰 사용
+      dispatch({
+        type: "StoreInfo",
+        payload: {
+          storeId: parseInt(storeid),
+          isPackage: parseInt(ispackage),
+          fcmToken: ftk
+        },
+      });
+      const OrderRequestAPI =
+        "https://api.smartorder.ml/stores/" + cart.storeId + "/orders";
+      const axiosConfig = {
+        headers: { "Content-Type": "application/json" },
+      };
+      const getMerchantUid = await axios.post(
+        OrderRequestAPI,
+        JSON.stringify(cart),
+        axiosConfig
+      );
+      const data = {
+        pg: "html5_inicis",
+        pay_method: "card",
+        merchant_uid: getMerchantUid.data,
+        amount: cart.totalPrice,
+        name: cart.orderMenu[0].menuName + " " + cart.countMessage,
+        buyer_name: "테스트",
+        buyer_tel: "",
+        buyer_email: "username@example.com",
+        m_redirect_url:
+          "https://www.smartorder.ml/stores/" +
+          storeInfo.id +
+          "/payments/complete",
+      }; /* 결제 데이터 {PG사, 결제수단, 주문번호, 결제금액, 주문명, 고객이름, 고객전화번호, 고객이메일, 모바일리다이렉트url} */
+      console.log(data);
+      const IMP = window.IMP; /* 1. IMP객체 초기화 */
+      IMP.init(storeInfo.impCode); /* 2. 가맹점 식별코드로 IMP객체 초기화 */
+      IMP.request_pay(data, callback); /* 3. 결제창 호출 */
+  }
+  else{
+      alert("알림토큰을 수신중입니다. 원활한 주문을 위해 잠시후 다시 진행해 주세요.")
+  }     
   };
   useEffect(() => {
+    fcm();
     fetchMenu(categoryid);
   }, []);
 
